@@ -4,13 +4,8 @@ import { CssBaseline } from 'material-ui';
 
 import Home from './home/home';
 
-// import './App.css';
-
-type AppProps = {  };
-type AppState = {  };
-
-class App extends React.Component<AppProps, AppState> {
-  constructor(props: object) {
+class App extends React.Component {
+  constructor(props) {
     super(props);
 
     this.state = {

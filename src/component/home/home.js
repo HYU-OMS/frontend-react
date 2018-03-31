@@ -1,10 +1,7 @@
 import * as React from 'react';
 
-type HomeProps = {  };
-type HomeState = {  };
-
-class Home extends React.Component<HomeProps, HomeState> {
-  constructor(props: object) {
+class Home extends React.Component {
+  constructor(props) {
     super(props);
 
     this.state = {
