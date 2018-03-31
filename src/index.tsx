@@ -1,11 +1,25 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import App from './App';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+
+import 'typeface-roboto';
+
+import App from './component/App';
+import reducer from './reducer';
+
 import registerServiceWorker from './registerServiceWorker';
-import './index.css';
+
+const store = createStore(reducer);
 
 ReactDOM.render(
-  <App />,
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>,
   document.getElementById('root') as HTMLElement
 );
+
 registerServiceWorker();
