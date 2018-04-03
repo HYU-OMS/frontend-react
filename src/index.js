@@ -4,6 +4,8 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
+import 'typeface-roboto';
+
 import App from './component/App';
 import reducer from './reducer';
 
