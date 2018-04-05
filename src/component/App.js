@@ -36,7 +36,7 @@ const styles = (theme) => ({
     width: '100%',
   },
   appBar: {
-    position: 'absolute',
+    position: 'fixed',
     marginLeft: drawerWidth,
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
@@ -51,10 +51,13 @@ const styles = (theme) => ({
   drawerPaper: {
     width: drawerWidth,
     [theme.breakpoints.up('md')]: {
-      position: 'relative',
+      position: 'fixed',
     },
   },
   content: {
+    [theme.breakpoints.up('md')]: {
+      marginLeft: drawerWidth,
+    },
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
@@ -105,9 +108,15 @@ class App extends React.Component {
         <Divider />
         <List>
           <ListItem button>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
+            <ListItemIcon><InboxIcon /></ListItemIcon>
+            <ListItemText primary="Inbox" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon><InboxIcon /></ListItemIcon>
+            <ListItemText primary="Inbox" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon><InboxIcon /></ListItemIcon>
             <ListItemText primary="Inbox" />
           </ListItem>
         </List>
@@ -118,7 +127,9 @@ class App extends React.Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
+        
         {appbar}
+        
         <Hidden mdUp>
           <Drawer
             variant="temporary"
@@ -135,6 +146,7 @@ class App extends React.Component {
             {drawer}
           </Drawer>
         </Hidden>
+        
         <Hidden smDown implementation="css">
           <Drawer
             variant="permanent"
@@ -146,6 +158,7 @@ class App extends React.Component {
             {drawer}
           </Drawer>
         </Hidden>
+        
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
