@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-class Home extends React.Component {
+class Queue extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -8,10 +8,10 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-        <p>Home</p>
+        <p>Queue</p>
       </div>
     );
   }
 }
 
-export default Home;
+export default Queue;

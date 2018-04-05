@@ -22,6 +22,15 @@ import SendIcon from 'material-ui-icons/Send';
 import MenuIcon from 'material-ui-icons/Menu';
 
 import Home from './home/home';
+import Group from './group/group';
+import OrderRequest from './order/request';
+import OrderList from './order/list';
+import OrderVerify from './order/verify';
+import Queue from './queue/queue';
+import ManageMenu from './manage/menu';
+import ManageSetmenu from './manage/setmenu';
+import ManageGroupAndMember from './manage/group_and_member';
+import Statistics from './statistics/statistics';
 
 const drawerWidth = 240;
 
@@ -163,6 +172,9 @@ class App extends React.Component {
           <div className={classes.toolbar} />
           <Switch>
             <Route path="/home" component={Home} />
+            <Route path="/group" component={Group} />
+            <Route path="/queue" component={Queue} />
+            <Route path="/statistics" component={Statistics} />
             <Redirect to="/home" />
           </Switch>
         </main>
