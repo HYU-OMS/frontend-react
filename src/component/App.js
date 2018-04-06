@@ -16,10 +16,18 @@ import {
   Hidden
 } from 'material-ui';
 import InboxIcon from 'material-ui-icons/MoveToInbox';
-import DraftsIcon from 'material-ui-icons/Drafts';
-import StarIcon from 'material-ui-icons/Star';
-import SendIcon from 'material-ui-icons/Send';
+import GroupIcon from 'material-ui-icons/Group';
+import HomeIcon from 'material-ui-icons/Home';
+import GroupAdd from 'material-ui-icons/GroupAdd';
 import MenuIcon from 'material-ui-icons/Menu';
+import InputIcon from 'material-ui-icons/Input';
+import PowerSettingsNewIcon from 'material-ui-icons/PowerSettingsNew';
+import PlaylistAddIcon from 'material-ui-icons/PlaylistAdd';
+import PlaylistAddCheckIcon from 'material-ui-icons/PlaylistAddCheck';
+import TocIcon from 'material-ui-icons/Toc';
+import FormatListNumberedIcon from 'material-ui-icons/FormatListNumbered';
+import DonutSmallIcon from 'material-ui-icons/DonutSmall';
+import SettingsIcon from 'material-ui-icons/Settings';
 
 import Home from './home/home';
 import Group from './group/group';
@@ -32,7 +40,7 @@ import ManageSetmenu from './manage/setmenu';
 import ManageGroupAndMember from './manage/group_and_member';
 import Statistics from './statistics/statistics';
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const styles = (theme) => ({
   root: {
@@ -93,6 +101,7 @@ class App extends React.Component {
   render() {
     const { classes, theme } = this.props;
 
+    /* 상단바 정의 (별 내용 없음) */
     const appbar = (
       <AppBar className={classes.appBar}>
         <Toolbar>
@@ -111,24 +120,98 @@ class App extends React.Component {
       </AppBar>
     );
 
+    /* 메뉴 바 정의 */
     const drawer = (
       <div>
         <div className={classes.toolbar} />
+        
         <Divider />
+        
         <List>
           <ListItem button>
-            <ListItemIcon><InboxIcon /></ListItemIcon>
-            <ListItemText primary="Inbox" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><InboxIcon /></ListItemIcon>
-            <ListItemText primary="Inbox" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><InboxIcon /></ListItemIcon>
-            <ListItemText primary="Inbox" />
+            <ListItemIcon><HomeIcon /></ListItemIcon>
+            <ListItemText primary="홈" />
           </ListItem>
         </List>
+        
+        <Divider />
+        
+        <List>
+          <ListItem button>
+            <ListItemIcon><GroupIcon /></ListItemIcon>
+            <ListItemText primary="그룹" />
+          </ListItem>
+        </List>
+        
+        <Divider />
+        
+        <List>
+          <ListItem button>
+            <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
+            <ListItemText primary="주문 입력" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon><TocIcon /></ListItemIcon>
+            <ListItemText primary="주문 내역" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon><PlaylistAddCheckIcon /></ListItemIcon>
+            <ListItemText primary="주문 처리" />
+          </ListItem>
+        </List>
+        
+        <Divider />
+        
+        <List>
+          <ListItem button>
+            <ListItemIcon><FormatListNumberedIcon /></ListItemIcon>
+            <ListItemText primary="대기열" />
+          </ListItem>
+        </List>
+        
+        <Divider />
+        
+        <List>
+          <ListItem button>
+            <ListItemIcon><DonutSmallIcon /></ListItemIcon>
+            <ListItemText primary="통계" />
+          </ListItem>
+        </List>
+        
+        <Divider />
+        
+        <List>
+          <ListItem button>
+            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemText primary="메뉴 관리" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemText primary="세트메뉴 관리" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon><GroupAdd /></ListItemIcon>
+            <ListItemText primary="그룹/멤버 관리" />
+          </ListItem>
+        </List>
+        
+        <Divider />
+        
+        <List>
+          <ListItem button>
+            <ListItemIcon><InputIcon /></ListItemIcon>
+            <ListItemText primary="Facebook 로그인" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon><InputIcon /></ListItemIcon>
+            <ListItemText primary="Kakao 로그인" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon><PowerSettingsNewIcon /></ListItemIcon>
+            <ListItemText primary="로그아웃" />
+          </ListItem>
+        </List>
+        
         <Divider />
       </div>
     );
