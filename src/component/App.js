@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import axios from 'axios';
 import { CssBaseline } from 'material-ui';
 import { withStyles } from 'material-ui/styles';
 import {
@@ -15,7 +17,6 @@ import {
   IconButton,
   Hidden
 } from 'material-ui';
-import InboxIcon from 'material-ui-icons/MoveToInbox';
 import GroupIcon from 'material-ui-icons/Group';
 import HomeIcon from 'material-ui-icons/Home';
 import GroupAdd from 'material-ui-icons/GroupAdd';
@@ -39,6 +40,9 @@ import ManageMenu from './manage/menu';
 import ManageSetmenu from './manage/setmenu';
 import ManageGroupAndMember from './manage/group_and_member';
 import Statistics from './statistics/statistics';
+
+import authAction from '../action/index';
+const { signIn, signOut } = authAction.auth;
 
 const drawerWidth = 260;
 
@@ -86,11 +90,107 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      mobileOpen: false,
+      "mobileOpen": false,
+      "is_in_process": false,
+      "is_mobile_menu_expanded": true,
+      "check_jwt_valid_interval": null,
+      "remain_jwt_valid_time": null
     };
 
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
   }
+  
+  componentWillMount() {
+    this.setState({
+      "check_jwt_valid_interval": setInterval(this.chk_jwt_valid, 1000)
+    });
+  }
+  
+  componentWillUnmount() {
+    clearInterval(this.state.check_jwt_valid_interval);
+  }
+  
+  chk_jwt_valid = () => {
+    if(this.props.jwt) {
+      /* global atob */
+      let jwt_content = this.props.jwt.split(".")[1];
+      let decoded_content = JSON.parse(atob(jwt_content));
+      let exp_unixtime = parseInt(decoded_content['exp'], 10);
+      let cur_unixtime = Math.round((new Date()).getTime() / 1000);
+
+      if(exp_unixtime - cur_unixtime < 0) {
+        alert("로그인 유효 시간이 만료되었습니다.\n다시 로그인해주세요.");
+        // browserHistory.push("/main");
+        this.props.signOut();
+        this.setState({
+          "remain_jwt_valid_time": null
+        });
+      }
+    }
+  };
+  
+  handleSignoutClick = (e) => {
+    // browserHistory.push("/main");
+    this.props.signOut();
+  };
+  
+  handleFacebookLogin = () => {
+    window.FB.login((response) => {
+      if(response.status === 'connected') {
+        let url = this.props.api_url + "/api/user?type=facebook";
+
+        this.setState({
+          "is_in_process": true
+        });
+
+        axios.post(url, response.authResponse)
+          .then((response) => {
+          this.props.signIn(response.data.jwt);
+          this.setState({
+            "is_in_process": false
+          });
+          // browserHistory.push("/group");
+        }).catch((error) => {
+          alert(error.response.data.message);
+          this.setState({
+            "is_in_process": false
+          });
+        });
+      }
+    });
+  };
+  
+  handleKakaoLogin = () => {
+    window.Kakao.Auth.login({
+      success: (authObj) => {
+        let access_token = authObj['access_token'];
+        let url = this.props.api_url + "/api/user?type=kakao";
+
+        this.setState({
+          "is_in_process": true
+        });
+
+        axios.post(url, {
+          "accessToken": access_token
+        }).then((response) => {
+          this.props.signIn(response.data.jwt);
+          this.setState({
+            "is_in_process": false
+          });
+          // browserHistory.push("/group");
+          //window.Kakao.Auth.logout();
+        }).catch((error) => {
+          alert(error.response.data.message);
+          this.setState({
+            "is_in_process": false
+          });
+        });
+      },
+      fail: (err) => {
+        console.log(err);
+      }
+    });
+  };
 
   handleDrawerToggle = () => {
     this.setState({
@@ -129,7 +229,7 @@ class App extends React.Component {
         
         <List>
           <Link to="/home" style={{ textDecoration: 'none' }}>
-            <ListItem button>
+            <ListItem onClick={this.handleDrawerToggle} button>
               <ListItemIcon><HomeIcon /></ListItemIcon>
               <ListItemText primary="홈" />
             </ListItem>
@@ -140,7 +240,7 @@ class App extends React.Component {
         
         <List>
           <Link to="/group" style={{ textDecoration: 'none' }}>
-            <ListItem button>
+            <ListItem onClick={this.handleDrawerToggle} button>
               <ListItemIcon><GroupIcon /></ListItemIcon>
               <ListItemText primary="그룹" />
             </ListItem>
@@ -151,19 +251,19 @@ class App extends React.Component {
         
         <List>
           <Link to="/order/request" style={{ textDecoration: 'none' }}>
-            <ListItem button>
+            <ListItem onClick={this.handleDrawerToggle} button>
               <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
               <ListItemText primary="주문 입력" />
             </ListItem>
           </Link>
           <Link to="/order/list" style={{ textDecoration: 'none' }}>
-            <ListItem button>
+            <ListItem onClick={this.handleDrawerToggle} button>
               <ListItemIcon><TocIcon /></ListItemIcon>
               <ListItemText primary="주문 내역" />
             </ListItem>
           </Link>
           <Link to="/order/verify" style={{ textDecoration: 'none' }}>
-            <ListItem button>
+            <ListItem onClick={this.handleDrawerToggle} button>
               <ListItemIcon><PlaylistAddCheckIcon /></ListItemIcon>
               <ListItemText primary="주문 처리" />
             </ListItem>
@@ -174,7 +274,7 @@ class App extends React.Component {
         
         <List>
           <Link to="/queue" style={{ textDecoration: 'none' }}>
-            <ListItem button>
+            <ListItem onClick={this.handleDrawerToggle} button>
               <ListItemIcon><FormatListNumberedIcon /></ListItemIcon>
               <ListItemText primary="대기열" />
             </ListItem>
@@ -185,7 +285,7 @@ class App extends React.Component {
         
         <List>
           <Link to="/statistics" style={{ textDecoration: 'none' }}>
-            <ListItem button>
+            <ListItem onClick={this.handleDrawerToggle} button>
               <ListItemIcon><DonutSmallIcon /></ListItemIcon>
               <ListItemText primary="통계" />
             </ListItem>
@@ -196,19 +296,19 @@ class App extends React.Component {
         
         <List>
           <Link to="/manage/menu" style={{ textDecoration: 'none' }}>
-            <ListItem button>
+            <ListItem onClick={this.handleDrawerToggle} button>
               <ListItemIcon><SettingsIcon /></ListItemIcon>
               <ListItemText primary="메뉴 관리" />
             </ListItem>
           </Link>
           <Link to="/manage/setmenu" style={{ textDecoration: 'none' }}>
-            <ListItem button>
+            <ListItem onClick={this.handleDrawerToggle} button>
               <ListItemIcon><SettingsIcon /></ListItemIcon>
               <ListItemText primary="세트메뉴 관리" />
             </ListItem>
           </Link>
           <Link to="/manage/member_and_group" style={{ textDecoration: 'none' }}>
-            <ListItem button>
+            <ListItem onClick={this.handleDrawerToggle} button>
               <ListItemIcon><GroupAdd /></ListItemIcon>
               <ListItemText primary="그룹/멤버 관리" />
             </ListItem>
@@ -217,22 +317,32 @@ class App extends React.Component {
         
         <Divider />
         
-        <List>
-          <ListItem button>
-            <ListItemIcon><InputIcon /></ListItemIcon>
-            <ListItemText primary="Facebook 로그인" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><InputIcon /></ListItemIcon>
-            <ListItemText primary="Kakao 로그인" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><PowerSettingsNewIcon /></ListItemIcon>
-            <ListItemText primary="로그아웃" />
-          </ListItem>
-        </List>
+        {this.props.jwt === null &&
+          <List>
+            <ListItem onClick={(e) => this.handleFacebookLogin()} button>
+              <ListItemIcon><InputIcon /></ListItemIcon>
+              <ListItemText primary="Facebook 로그인" />
+            </ListItem>
+            <ListItem onClick={(e) => this.handleKakaoLogin()} button>
+              <ListItemIcon><InputIcon /></ListItemIcon>
+              <ListItemText primary="Kakao 로그인" />
+            </ListItem>
+          </List>
+        }
+        
+        {this.props.jwt !== null &&
+          <List>
+            <ListItem button>
+              <ListItemIcon><PowerSettingsNewIcon /></ListItemIcon>
+              <ListItemText onClick={this.handleSignoutClick} primary="로그아웃" />
+            </ListItem>
+          </List>
+        }
         
         <Divider />
+        
+        <div className={classes.toolbar} />
+        <div className={classes.toolbar} />
       </div>
     );
     
@@ -308,4 +418,27 @@ class App extends React.Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(App);
+const mapStateToProps = (state) => {
+  return {
+    "jwt": state.auth.jwt,
+    "api_url": state.auth.api_url,
+    "group_id": state.auth.group_id,
+    "role": state.auth.role
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    "signIn": (jwt) => {
+      dispatch(signIn(jwt));
+    },
+    "signOut": () => {
+      dispatch(signOut());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles, { withTheme: true })(App));
