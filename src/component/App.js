@@ -132,6 +132,26 @@ class App extends React.Component {
         <Divider />
       </div>
     );
+    
+    /* Order 화면에 대한 Sub Route 를 정의 */
+    const OrderRoute = ({ match }) => (
+      <Switch>
+        <Route path={match.url + "/request"} component={OrderRequest} />
+        <Route path={match.url + "/list"} component={OrderList} />
+        <Route path={match.url + "/verify"} component={OrderVerify} />
+        <Redirect to="/home" />
+      </Switch>
+    );
+    
+    /* Manage 화면에 대한 Sub Route 를 정의 */
+    const ManageRoute = ({ match }) => (
+      <Switch>
+        <Route path={match.url + "/menu"} component={ManageMenu} />
+        <Route path={match.url + "/setmenu"} component={ManageSetmenu} />
+        <Route path={match.url + "/member_and_group"} component={ManageGroupAndMember} />
+        <Redirect to="/home" />
+      </Switch>
+    );
 
     return (
       <div className={classes.root}>
@@ -173,8 +193,10 @@ class App extends React.Component {
           <Switch>
             <Route path="/home" component={Home} />
             <Route path="/group" component={Group} />
+            <Route path="/order" component={OrderRoute} />
             <Route path="/queue" component={Queue} />
             <Route path="/statistics" component={Statistics} />
+            <Route path="/manage" component={ManageRoute} />
             <Redirect to="/home" />
           </Switch>
         </main>
