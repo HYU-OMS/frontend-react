@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, Link } from 'react-router-dom';
 import { CssBaseline } from 'material-ui';
 import { withStyles } from 'material-ui/styles';
 import {
@@ -128,71 +128,91 @@ class App extends React.Component {
         <Divider />
         
         <List>
-          <ListItem button>
-            <ListItemIcon><HomeIcon /></ListItemIcon>
-            <ListItemText primary="홈" />
-          </ListItem>
+          <Link to="/home" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon><HomeIcon /></ListItemIcon>
+              <ListItemText primary="홈" />
+            </ListItem>
+          </Link>
         </List>
         
         <Divider />
         
         <List>
-          <ListItem button>
-            <ListItemIcon><GroupIcon /></ListItemIcon>
-            <ListItemText primary="그룹" />
-          </ListItem>
+          <Link to="/group" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon><GroupIcon /></ListItemIcon>
+              <ListItemText primary="그룹" />
+            </ListItem>
+          </Link>
         </List>
         
         <Divider />
         
         <List>
-          <ListItem button>
-            <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
-            <ListItemText primary="주문 입력" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><TocIcon /></ListItemIcon>
-            <ListItemText primary="주문 내역" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><PlaylistAddCheckIcon /></ListItemIcon>
-            <ListItemText primary="주문 처리" />
-          </ListItem>
+          <Link to="/order/request" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
+              <ListItemText primary="주문 입력" />
+            </ListItem>
+          </Link>
+          <Link to="/order/list" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon><TocIcon /></ListItemIcon>
+              <ListItemText primary="주문 내역" />
+            </ListItem>
+          </Link>
+          <Link to="/order/verify" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon><PlaylistAddCheckIcon /></ListItemIcon>
+              <ListItemText primary="주문 처리" />
+            </ListItem>
+          </Link>
         </List>
         
         <Divider />
         
         <List>
-          <ListItem button>
-            <ListItemIcon><FormatListNumberedIcon /></ListItemIcon>
-            <ListItemText primary="대기열" />
-          </ListItem>
+          <Link to="/queue" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon><FormatListNumberedIcon /></ListItemIcon>
+              <ListItemText primary="대기열" />
+            </ListItem>
+          </Link>
         </List>
         
         <Divider />
         
         <List>
-          <ListItem button>
-            <ListItemIcon><DonutSmallIcon /></ListItemIcon>
-            <ListItemText primary="통계" />
-          </ListItem>
+          <Link to="/statistics" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon><DonutSmallIcon /></ListItemIcon>
+              <ListItemText primary="통계" />
+            </ListItem>
+          </Link>
         </List>
         
         <Divider />
         
         <List>
-          <ListItem button>
-            <ListItemIcon><SettingsIcon /></ListItemIcon>
-            <ListItemText primary="메뉴 관리" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><SettingsIcon /></ListItemIcon>
-            <ListItemText primary="세트메뉴 관리" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><GroupAdd /></ListItemIcon>
-            <ListItemText primary="그룹/멤버 관리" />
-          </ListItem>
+          <Link to="/manage/menu" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon><SettingsIcon /></ListItemIcon>
+              <ListItemText primary="메뉴 관리" />
+            </ListItem>
+          </Link>
+          <Link to="/manage/setmenu" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon><SettingsIcon /></ListItemIcon>
+              <ListItemText primary="세트메뉴 관리" />
+            </ListItem>
+          </Link>
+          <Link to="/manage/member_and_group" style={{ textDecoration: 'none' }}>
+            <ListItem button>
+              <ListItemIcon><GroupAdd /></ListItemIcon>
+              <ListItemText primary="그룹/멤버 관리" />
+            </ListItem>
+          </Link>
         </List>
         
         <Divider />
