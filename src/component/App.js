@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Route, Switch, Redirect, Link } from 'react-router-dom';
-import { withRouter } from 'react-router';
+import { Route, Switch, Redirect, Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { CssBaseline } from 'material-ui';
@@ -99,6 +98,7 @@ class App extends React.Component {
     };
 
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
+    this.menuButtonDecoration = this.menuButtonDecoration.bind(this);
   }
   
   componentWillMount() {
@@ -198,6 +198,15 @@ class App extends React.Component {
       mobileOpen: !this.state.mobileOpen
     });
   };
+  
+  menuButtonDecoration = (path) => {
+    if(path === this.props.location.pathname) {
+      return 'rgba(0, 0, 0, 0.05)';
+    }
+    else {
+      return 'rgba(0, 0, 0, 0)';
+    }
+  };
 
   render() {
     const { classes, theme } = this.props;
@@ -230,7 +239,7 @@ class App extends React.Component {
         
         <List>
           <Link to="/home" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} button>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/home") }} button>
               <ListItemIcon><HomeIcon /></ListItemIcon>
               <ListItemText primary="홈" />
             </ListItem>
@@ -241,7 +250,7 @@ class App extends React.Component {
         
         <List>
           <Link to="/group" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} button>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/group") }} button>
               <ListItemIcon><GroupIcon /></ListItemIcon>
               <ListItemText primary="그룹" />
             </ListItem>
@@ -252,19 +261,19 @@ class App extends React.Component {
         
         <List>
           <Link to="/order/request" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} button>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/order/request") }} button>
               <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
               <ListItemText primary="주문 입력" />
             </ListItem>
           </Link>
           <Link to="/order/list" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} button>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/order/list") }} button>
               <ListItemIcon><TocIcon /></ListItemIcon>
               <ListItemText primary="주문 내역" />
             </ListItem>
           </Link>
           <Link to="/order/verify" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} button>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/order/verify") }} button>
               <ListItemIcon><PlaylistAddCheckIcon /></ListItemIcon>
               <ListItemText primary="주문 처리" />
             </ListItem>
@@ -275,7 +284,7 @@ class App extends React.Component {
         
         <List>
           <Link to="/queue" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} button>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/queue") }} button>
               <ListItemIcon><FormatListNumberedIcon /></ListItemIcon>
               <ListItemText primary="대기열" />
             </ListItem>
@@ -286,7 +295,7 @@ class App extends React.Component {
         
         <List>
           <Link to="/statistics" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} button>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/statistics") }} button>
               <ListItemIcon><DonutSmallIcon /></ListItemIcon>
               <ListItemText primary="통계" />
             </ListItem>
@@ -297,19 +306,19 @@ class App extends React.Component {
         
         <List>
           <Link to="/manage/menu" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} button>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/manage/menu") }} button>
               <ListItemIcon><SettingsIcon /></ListItemIcon>
               <ListItemText primary="메뉴 관리" />
             </ListItem>
           </Link>
           <Link to="/manage/setmenu" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} button>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/manage/setmenu") }} button>
               <ListItemIcon><SettingsIcon /></ListItemIcon>
               <ListItemText primary="세트메뉴 관리" />
             </ListItem>
           </Link>
           <Link to="/manage/member_and_group" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} button>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/manage/member_and_group") }} button>
               <ListItemIcon><GroupAdd /></ListItemIcon>
               <ListItemText primary="그룹/멤버 관리" />
             </ListItem>
