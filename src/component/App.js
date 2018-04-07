@@ -452,6 +452,8 @@ class App extends React.Component {
           
           {RouteView}
           
+          <br/>
+          
           <Typography variant="caption" align="center">
             &copy; 2014 - 2018 한양대학교 한기훈
           </Typography>
