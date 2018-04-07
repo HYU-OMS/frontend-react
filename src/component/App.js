@@ -121,7 +121,7 @@ class App extends React.Component {
 
       if(exp_unixtime - cur_unixtime < 0) {
         alert("로그인 유효 시간이 만료되었습니다.\n다시 로그인해주세요.");
-        // browserHistory.push("/main");
+        this.props.history.push("/home");
         this.props.signOut();
         this.setState({
           "remain_jwt_valid_time": null
@@ -131,7 +131,7 @@ class App extends React.Component {
   };
   
   handleSignoutClick = (e) => {
-    // browserHistory.push("/main");
+    this.props.history.push("/home");
     this.props.signOut();
   };
   
@@ -150,7 +150,8 @@ class App extends React.Component {
           this.setState({
             "is_in_process": false
           });
-          // browserHistory.push("/group");
+          
+          this.props.history.push("/home");
         }).catch((error) => {
           alert(error.response.data.message);
           this.setState({
@@ -178,8 +179,8 @@ class App extends React.Component {
           this.setState({
             "is_in_process": false
           });
-          // browserHistory.push("/group");
-          //window.Kakao.Auth.logout();
+          this.props.history.push("/home");
+          // window.Kakao.Auth.logout();
         }).catch((error) => {
           alert(error.response.data.message);
           this.setState({
