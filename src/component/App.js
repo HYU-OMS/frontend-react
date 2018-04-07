@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { CssBaseline } from 'material-ui';
@@ -365,6 +366,22 @@ class App extends React.Component {
         <Redirect to="/home" />
       </Switch>
     );
+    
+    /* Route로 변하는 부분을 정의 */
+    const RouteView = (
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        <Switch>
+          <Route path="/home" component={Home} />
+          <Route path="/group" component={Group} />
+          <Route path="/order" component={OrderRoute} />
+          <Route path="/queue" component={Queue} />
+          <Route path="/statistics" component={Statistics} />
+          <Route path="/manage" component={ManageRoute} />
+          <Redirect to="/home" />
+        </Switch>
+      </main>
+    );
 
     return (
       <div className={classes.root}>
@@ -401,18 +418,7 @@ class App extends React.Component {
           </Drawer>
         </Hidden>
         
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Switch>
-            <Route path="/home" component={Home} />
-            <Route path="/group" component={Group} />
-            <Route path="/order" component={OrderRoute} />
-            <Route path="/queue" component={Queue} />
-            <Route path="/statistics" component={Statistics} />
-            <Route path="/manage" component={ManageRoute} />
-            <Redirect to="/home" />
-          </Switch>
-        </main>
+        {RouteView}
       </div>
     );
   }
@@ -438,7 +444,11 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
+/* Router Update가 되지 않는 문제를 해결하기 위해 withRouter 를 사용함.
+ * 이 방법은 최적이 아니라고 하며 다른 방법으로 최적화를 하는 것이 좋음.
+ * https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
+ */
+export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles, { withTheme: true })(App));
+)(withStyles(styles, { "withTheme": true })(App)));
