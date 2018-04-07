@@ -249,84 +249,106 @@ class App extends React.Component {
         
         <Divider />
         
-        <List>
-          <Link to="/group" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/group") }} button>
-              <ListItemIcon><GroupIcon /></ListItemIcon>
-              <ListItemText primary="그룹" />
-            </ListItem>
-          </Link>
-        </List>
+        {this.props.jwt !== null &&
+          <div>
+            <List>
+              <Link to="/group" style={{ textDecoration: 'none' }}>
+                <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/group") }} button>
+                  <ListItemIcon><GroupIcon /></ListItemIcon>
+                  <ListItemText primary="그룹" />
+                </ListItem>
+              </Link>
+            </List>
+            
+            <Divider />
+          </div>
+        }
         
-        <Divider />
+        {this.props.jwt !== null && this.props.group_id !== null &&
+          <div>
+            <List>
+              <Link to="/order/request" style={{ textDecoration: 'none' }}>
+                <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/order/request") }} button>
+                  <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
+                  <ListItemText primary="주문 입력" />
+                </ListItem>
+              </Link>
+              <Link to="/order/list" style={{ textDecoration: 'none' }}>
+                <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/order/list") }} button>
+                  <ListItemIcon><TocIcon /></ListItemIcon>
+                  <ListItemText primary="주문 내역" />
+                </ListItem>
+              </Link>
+              {this.props.role > 0 &&
+                <Link to="/order/verify" style={{ textDecoration: 'none' }}>
+                  <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/order/verify") }} button>
+                    <ListItemIcon><PlaylistAddCheckIcon /></ListItemIcon>
+                    <ListItemText primary="주문 처리" />
+                  </ListItem>
+                </Link>
+              }
+            </List>
+            
+            <Divider />
+          </div>
+        }
         
-        <List>
-          <Link to="/order/request" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/order/request") }} button>
-              <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
-              <ListItemText primary="주문 입력" />
-            </ListItem>
-          </Link>
-          <Link to="/order/list" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/order/list") }} button>
-              <ListItemIcon><TocIcon /></ListItemIcon>
-              <ListItemText primary="주문 내역" />
-            </ListItem>
-          </Link>
-          <Link to="/order/verify" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/order/verify") }} button>
-              <ListItemIcon><PlaylistAddCheckIcon /></ListItemIcon>
-              <ListItemText primary="주문 처리" />
-            </ListItem>
-          </Link>
-        </List>
+        {this.props.jwt !== null && this.props.group_id !== null &&
+          <div>
+            <List>
+              <Link to="/queue" style={{ textDecoration: 'none' }}>
+                <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/queue") }} button>
+                  <ListItemIcon><FormatListNumberedIcon /></ListItemIcon>
+                  <ListItemText primary="대기열" />
+                </ListItem>
+              </Link>
+            </List>
+            
+            <Divider />
+          </div>
+        }
         
-        <Divider />
+        {this.props.jwt !== null && this.props.group_id !== null &&
+          <div>
+            <List>
+              <Link to="/statistics" style={{ textDecoration: 'none' }}>
+                <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/statistics") }} button>
+                  <ListItemIcon><DonutSmallIcon /></ListItemIcon>
+                  <ListItemText primary="통계" />
+                </ListItem>
+              </Link>
+            </List>
+            
+            <Divider />
+          </div>
+        }
         
-        <List>
-          <Link to="/queue" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/queue") }} button>
-              <ListItemIcon><FormatListNumberedIcon /></ListItemIcon>
-              <ListItemText primary="대기열" />
-            </ListItem>
-          </Link>
-        </List>
-        
-        <Divider />
-        
-        <List>
-          <Link to="/statistics" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/statistics") }} button>
-              <ListItemIcon><DonutSmallIcon /></ListItemIcon>
-              <ListItemText primary="통계" />
-            </ListItem>
-          </Link>
-        </List>
-        
-        <Divider />
-        
-        <List>
-          <Link to="/manage/menu" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/manage/menu") }} button>
-              <ListItemIcon><SettingsIcon /></ListItemIcon>
-              <ListItemText primary="메뉴 관리" />
-            </ListItem>
-          </Link>
-          <Link to="/manage/setmenu" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/manage/setmenu") }} button>
-              <ListItemIcon><SettingsIcon /></ListItemIcon>
-              <ListItemText primary="세트메뉴 관리" />
-            </ListItem>
-          </Link>
-          <Link to="/manage/member_and_group" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/manage/member_and_group") }} button>
-              <ListItemIcon><GroupAdd /></ListItemIcon>
-              <ListItemText primary="그룹/멤버 관리" />
-            </ListItem>
-          </Link>
-        </List>
-        
-        <Divider />
+        {this.props.jwt !== null && this.props.group_id !== null && this.props.role > 1 &&
+          <div>
+            <List>
+              <Link to="/manage/menu" style={{ textDecoration: 'none' }}>
+                <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/manage/menu") }} button>
+                  <ListItemIcon><SettingsIcon /></ListItemIcon>
+                  <ListItemText primary="메뉴 관리" />
+                </ListItem>
+              </Link>
+              <Link to="/manage/setmenu" style={{ textDecoration: 'none' }}>
+                <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/manage/setmenu") }} button>
+                  <ListItemIcon><SettingsIcon /></ListItemIcon>
+                  <ListItemText primary="세트메뉴 관리" />
+                </ListItem>
+              </Link>
+              <Link to="/manage/member_and_group" style={{ textDecoration: 'none' }}>
+                <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/manage/member_and_group") }} button>
+                  <ListItemIcon><GroupAdd /></ListItemIcon>
+                  <ListItemText primary="그룹/멤버 관리" />
+                </ListItem>
+              </Link>
+            </List>
+            
+            <Divider />
+          </div>
+        }
         
         {this.props.jwt === null &&
           <List>
