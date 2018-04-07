@@ -401,18 +401,15 @@ class App extends React.Component {
     
     /* Route로 변하는 부분을 정의 */
     const RouteView = (
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <Switch>
-          <Route path="/home" component={Home} />
-          <Route path="/group" component={Group} />
-          <Route path="/order" component={OrderRoute} />
-          <Route path="/queue" component={Queue} />
-          <Route path="/statistics" component={Statistics} />
-          <Route path="/manage" component={ManageRoute} />
-          <Redirect to="/home" />
-        </Switch>
-      </main>
+      <Switch>
+        <Route path="/home" component={Home} />
+        <Route path="/group" component={Group} />
+        <Route path="/order" component={OrderRoute} />
+        <Route path="/queue" component={Queue} />
+        <Route path="/statistics" component={Statistics} />
+        <Route path="/manage" component={ManageRoute} />
+        <Redirect to="/home" />
+      </Switch>
     );
 
     return (
@@ -450,7 +447,15 @@ class App extends React.Component {
           </Drawer>
         </Hidden>
         
-        {RouteView}
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          
+          {RouteView}
+          
+          <Typography variant="caption" align="center">
+            &copy; 2014 - 2018 한양대학교 한기훈
+          </Typography>
+        </main>
       </div>
     );
   }
