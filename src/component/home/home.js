@@ -13,13 +13,9 @@ const styles = (theme) => ({
 });
 
 class Home extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  
   render() {
     const { classes } = this.props;
-    
+
     return (
       <div>
         <Paper className={classes.root} elevation={4}>
@@ -27,19 +23,19 @@ class Home extends React.Component {
             HYU OMS
           </Typography>
           <Typography component="p">
-            개선해야 될 점 등의 의견을 남겨주세요! 여러분의 의견은 더 나은 시스템을 만드는 데 도움이 됩니다.
+            개선해야 될 점 등의 의견을 남겨주세요!<br/>
+            여러분의 의견은 더 나은 시스템을 만드는 데 도움이 됩니다.
           </Typography>
         </Paper>
         
         <Paper className={classes.root} elevation={4}>
-          <Typography component="p">
-            {(function() {
-              let d = document, s = d.createElement('script');
-              s.src = 'https://2017-hyu-oms.disqus.com/embed.js';
-              s.setAttribute('data-timestamp', +new Date());
-              (d.head || d.body).appendChild(s);
-            })()}
-          </Typography>
+          <div id="disqus_thread" />
+          {(function() { // DON'T EDIT BELOW THIS LINE
+          const d = document, s = d.createElement('script');
+          s.src = 'https://2017-hyu-oms.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+          })()}
         </Paper>
       </div>
     );
