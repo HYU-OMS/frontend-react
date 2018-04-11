@@ -1,28 +1,20 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { Paper, Table, Button, Hidden } from 'material-ui';
-import { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import PropTypes from 'prop-types';
+import { Paper } from 'material-ui';
 import { withStyles } from 'material-ui/styles';
-import WarningIcon from 'material-ui-icons/Warning';
-import PersonIcon from 'material-ui-icons/Person';
-import StarHalfIcon from 'material-ui-icons/StarHalf';
-import StarIcon from 'material-ui-icons/Star';
-import TouchAppIcon from 'material-ui-icons/TouchApp';
+
+import List, { ListItem, ListItemText } from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
 
 import authAction from '../../action/index';
 const { selectGroup } = authAction.auth;
 
 const styles = theme => ({
   root: {
-    minWidth: 0,
     width: '100%',
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
-  },
-  button: {
-    minWidth: 0
   }
 });
 
@@ -96,40 +88,27 @@ class Group extends React.Component {
   }
   
   displayGroupPermission(role) {
-    const { classes } = this.props;
-    
     switch(role) {
       case 0:
-        return (
-          <Button className={classes.button} size="small" variant="flat">
-            <PersonIcon />
-            일반 멤버
-          </Button>
-        );
+        return "일반 멤버";
 
       case 1:
-        return (
-          <Button className={classes.button} size="small" variant="flat">
-            <StarHalfIcon />
-            중간 관리자
-          </Button>
-        );
+        return "중간 관리자";
 
       case 2:
-        return (
-          <Button className={classes.button} size="small" variant="flat">
-            <StarIcon />
-            최고 관리자
-          </Button>
-        );
+        return "최고 관리자";
 
       default:
-        return (
-          <Button className={classes.button} size="small" variant="flat">
-            <WarningIcon />
-            알 수 없음
-          </Button>
-        );
+        return "알 수 없음";
+    }
+  }
+  
+  decorateSelectedGroupRow(group_id) {
+    if(group_id === this.props.group_id) {
+      return 'rgba(0, 0, 0, 0.075)';
+    }
+    else {
+      return 'rgba(0, 0, 0, 0)';
     }
   }
   
@@ -216,52 +195,22 @@ class Group extends React.Component {
     
     /* 그룹 목록을 정의 */
     const group_list = this.state.list.map((rowItem) => 
-      <TableRow key={rowItem.id} selected={this.props.group_id === rowItem.id}>
-        <Hidden only={['xs']}>
-          <TableCell>{rowItem.id}</TableCell>
-        </Hidden>
-        <TableCell>{rowItem.name}</TableCell>
-        <TableCell>{this.displayGroupPermission(rowItem.role)}</TableCell>
-        <Hidden only={['xs']}>
-          <TableCell>{this.getDateString(rowItem.created_at)}</TableCell>
-        </Hidden>
-        <TableCell>
-          <Button
-          className={classes.button}
-          variant="flat"
-          onClick={(e) => this.handleGroupSelectClick({"group_id": rowItem.id, "role": rowItem.role, "signup_code": rowItem.signup_code})}
-          >
-            <TouchAppIcon />
-          </Button>
-        </TableCell>
-      </TableRow>
+      <ListItem
+      button
+      onClick={(e) => this.handleGroupSelectClick({"group_id": rowItem.id, "role": rowItem.role, "signup_code": rowItem.signup_code})}
+      key={rowItem.id}
+      style={{ backgroundColor: this.decorateSelectedGroupRow(rowItem.id) }}
+      >
+        <Avatar>
+          {rowItem.id}
+        </Avatar>
+        <ListItemText primary={rowItem.name + " (" + this.displayGroupPermission(rowItem.role) + ")" } secondary={this.getDateString(rowItem.created_at)} />
+      </ListItem>
     );
-    
     return (
       <div>
         <Paper className={classes.root}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <Hidden only={['xs']}>
-                  <TableCell>#</TableCell>
-                </Hidden>
-                <TableCell>이름</TableCell>
-                <TableCell>권한</TableCell>
-                <Hidden only={['xs']}>
-                  <TableCell>생성일</TableCell>
-                </Hidden>
-                <TableCell>선택</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {group_list}
-            </TableBody>
-          </Table>
-        </Paper>
-        
-        <Paper className={classes.root}>
-          
+          <List>{group_list}</List>
         </Paper>
       </div>
     );
