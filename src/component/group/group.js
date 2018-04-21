@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { Paper } from 'material-ui';
+import { Paper, Typography } from 'material-ui';
 import { withStyles } from 'material-ui/styles';
 
 import List, { ListItem, ListItemText } from 'material-ui/List';
@@ -207,8 +207,10 @@ class Group extends React.Component {
         <ListItemText primary={rowItem.name + " (" + this.displayGroupPermission(rowItem.role) + ")" } secondary={this.getDateString(rowItem.created_at)} />
       </ListItem>
     );
+    
     return (
       <div>
+        <Typography variant="headline" align="center">그룹 목록</Typography>
         <Paper className={classes.root}>
           <List>{group_list}</List>
         </Paper>
