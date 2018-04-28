@@ -1,13 +1,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { Paper, Typography, TextField, Button } from 'material-ui';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import { FormControl } from 'material-ui/Form';
+import { Paper, Typography, Button, Hidden, Table } from 'material-ui';
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from 'material-ui/Table';
 import { withStyles } from 'material-ui/styles';
-import Card, { CardActions, CardContent } from 'material-ui/Card';
-import AddIcon from 'material-ui-icons/Add';
-import RemoveIcon from 'material-ui-icons/Remove';
+import CheckIcon from 'material-ui-icons/Check';
+import CloseIcon from 'material-ui-icons/Close';
+import HourglassEmptyIcon from 'material-ui-icons/HourglassEmpty';
+import TouchAppIcon from 'material-ui-icons/TouchApp';
 
 const styles = theme => ({
   root: {
@@ -24,6 +29,15 @@ const styles = theme => ({
     paddingRight: "15px",
     paddingTop: "10px",
     paddingBottom: "10px"
+  },
+  button: {
+    margin: theme.spacing.unit,
+    fontSize: '12px',
+    width: '30px',
+    height: '30px'
+  },
+  buttonAlign: {
+    textAlign: 'center'
   }
 });
 
@@ -118,13 +132,13 @@ class OrderList extends React.Component {
   getStatusIcon(status) {
     switch(status) {
       case 1:
-        // return (<Icon name='checkmark' color="blue" size='large' />);
+        return (<CheckIcon />);
 
       case 0:
-        // return (<Icon name='question' size='large' />);
+        return (<HourglassEmptyIcon />);
 
       case -1:
-        // return (<Icon name='remove' color="red" size='large' />);
+        return (<CloseIcon />);
 
       default:
         return null;
@@ -168,11 +182,57 @@ class OrderList extends React.Component {
   render() {
     const { classes } = this.props;
     
+    const rowItems = this.state.list.map((rowItem) => 
+      <TableRow key={rowItem.id}>
+        <TableCell className={classes.tablecell}>{rowItem.id}</TableCell>
+        <Hidden xsDown>
+          <TableCell className={classes.tablecell}>{rowItem.name}</TableCell>
+        </Hidden>
+        <TableCell className={classes.tablecell} onClick={(e) => this.handleGetOrderInfo(rowItem)}>
+          <TouchAppIcon />
+        </TableCell>
+        <TableCell className={classes.tablecell}>{rowItem.total_price}</TableCell>
+        <TableCell className={classes.tablecell}>{rowItem.table_id}</TableCell>
+        <Hidden xsDown>
+          <TableCell className={classes.tablecell}>{this.getDateString(rowItem.created_at)}</TableCell>
+        </Hidden>
+        <TableCell className={classes.tablecell}>{this.getStatusIcon(rowItem.status)}</TableCell>
+      </TableRow>
+    );
+    
+    const pageItems = this.state.pagination.map((page) => 
+      <Button key={page.num} variant="fab" mini color={(page.current === true) ? 'primary' : 'default'} className={classes.button} onClick={(e) => this.handleGetOrderListClick(page.num)}>
+        {page.text}
+      </Button>
+    );
+    
     return (
       <div>
         <Typography variant="headline" align="center">주문 내역</Typography>
         <Paper className={classes.root}>
-        
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell className={classes.tablecell}>#</TableCell>
+                <Hidden xsDown>
+                  <TableCell className={classes.tablecell}>주문자명</TableCell>
+                </Hidden>
+                <TableCell className={classes.tablecell}>내역</TableCell>
+                <TableCell className={classes.tablecell}>가격</TableCell>
+                <TableCell className={classes.tablecell}>테이블</TableCell>
+                <Hidden xsDown>
+                  <TableCell className={classes.tablecell}>시간</TableCell>
+                </Hidden>
+                <TableCell className={classes.tablecell}>상태</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rowItems}
+            </TableBody>
+          </Table>
+          <div className={classes.buttonAlign}>
+            {pageItems}
+          </div>
         </Paper>
       </div>
     );
