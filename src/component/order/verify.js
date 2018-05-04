@@ -222,7 +222,7 @@ class OrderVerify extends React.Component {
     
     return (
       <div>
-        <Typography variant="headline" align="center">주문 대기열</Typography>
+        <Typography variant="headline" align="center">미처리 주문 내역</Typography>
         <Paper className={classes.root}>
           <Table>
             <TableHead>
