@@ -17,18 +17,18 @@ import {
   IconButton,
   Hidden
 } from 'material-ui';
-import GroupIcon from 'material-ui-icons/Group';
-import HomeIcon from 'material-ui-icons/Home';
-import GroupAdd from 'material-ui-icons/GroupAdd';
-import MenuIcon from 'material-ui-icons/Menu';
-import InputIcon from 'material-ui-icons/Input';
-import PowerSettingsNewIcon from 'material-ui-icons/PowerSettingsNew';
-import PlaylistAddIcon from 'material-ui-icons/PlaylistAdd';
-import PlaylistAddCheckIcon from 'material-ui-icons/PlaylistAddCheck';
-import TocIcon from 'material-ui-icons/Toc';
-import FormatListNumberedIcon from 'material-ui-icons/FormatListNumbered';
-import DonutSmallIcon from 'material-ui-icons/DonutSmall';
-import SettingsIcon from 'material-ui-icons/Settings';
+import GroupIcon from '@material-ui/icons/Group';
+import HomeIcon from '@material-ui/icons/Home';
+import GroupAdd from '@material-ui/icons/GroupAdd';
+import MenuIcon from '@material-ui/icons/Menu';
+import InputIcon from '@material-ui/icons/Input';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
+import TocIcon from '@material-ui/icons/Toc';
+import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
+import DonutSmallIcon from '@material-ui/icons/DonutSmall';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import Home from './home/home';
 import Group from './group/group';

@@ -9,10 +9,10 @@ import {
   TableRow,
 } from 'material-ui/Table';
 import { withStyles } from 'material-ui/styles';
-import CheckIcon from 'material-ui-icons/Check';
-import CloseIcon from 'material-ui-icons/Close';
-import HourglassEmptyIcon from 'material-ui-icons/HourglassEmpty';
-import TouchAppIcon from 'material-ui-icons/TouchApp';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
+import TouchAppIcon from '@material-ui/icons/TouchApp';
 
 const styles = theme => ({
   root: {

@@ -9,9 +9,9 @@ import {
   TableRow,
 } from 'material-ui/Table';
 import { withStyles } from 'material-ui/styles';
-import ClearIcon from 'material-ui-icons/Clear';
-import DoneIcon from 'material-ui-icons/Done';
-import TouchAppIcon from 'material-ui-icons/TouchApp';
+import ClearIcon from '@material-ui/icons/Clear';
+import DoneIcon from '@material-ui/icons/Done';
+import TouchAppIcon from '@material-ui/icons/TouchApp';
 
 const styles = theme => ({
   root: {

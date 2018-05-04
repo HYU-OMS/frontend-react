@@ -6,8 +6,8 @@ import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Ta
 import { FormControl } from 'material-ui/Form';
 import { withStyles } from 'material-ui/styles';
 import Card, { CardActions, CardContent } from 'material-ui/Card';
-import AddIcon from 'material-ui-icons/Add';
-import RemoveIcon from 'material-ui-icons/Remove';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 const styles = theme => ({
   root: {
