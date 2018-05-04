@@ -162,6 +162,9 @@ class OrderList extends React.Component {
         });
 
         let alert_msg = "주문번호 : " + (response.data.order_id).toString() + "\n";
+        alert_msg += "테이블 : " + (orderItem.table_id).toString() + "\n";
+        alert_msg += "시간 : " + this.getDateString(orderItem.created_at) + "\n";
+        
         alert_msg += "\n[일반메뉴]\n";
         for(const menu_info of response.data.order_menus) {
           alert_msg += (menu_info['name'] + " : " + menu_info['amount'] + "\n");
@@ -192,8 +195,8 @@ class OrderList extends React.Component {
           <TouchAppIcon />
         </TableCell>
         <TableCell className={classes.tablecell}>{rowItem.total_price}</TableCell>
-        <TableCell className={classes.tablecell}>{rowItem.table_id}</TableCell>
         <Hidden xsDown>
+          <TableCell className={classes.tablecell}>{rowItem.table_id}</TableCell>
           <TableCell className={classes.tablecell}>{this.getDateString(rowItem.created_at)}</TableCell>
         </Hidden>
         <TableCell className={classes.tablecell}>{this.getStatusIcon(rowItem.status)}</TableCell>
@@ -219,8 +222,8 @@ class OrderList extends React.Component {
                 </Hidden>
                 <TableCell className={classes.tablecell}>내역</TableCell>
                 <TableCell className={classes.tablecell}>가격</TableCell>
-                <TableCell className={classes.tablecell}>테이블</TableCell>
                 <Hidden xsDown>
+                  <TableCell className={classes.tablecell}>테이블</TableCell>
                   <TableCell className={classes.tablecell}>시간</TableCell>
                 </Hidden>
                 <TableCell className={classes.tablecell}>상태</TableCell>
