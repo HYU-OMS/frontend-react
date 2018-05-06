@@ -121,7 +121,7 @@ class App extends React.Component {
 
       if(exp_unixtime - cur_unixtime < 0) {
         alert("로그인 유효 시간이 만료되었습니다.\n다시 로그인해주세요.");
-        this.props.history.push("/home");
+        this.props.history.push("/main");
         this.props.signOut();
         this.setState({
           "remain_jwt_valid_time": null
@@ -131,7 +131,7 @@ class App extends React.Component {
   };
   
   handleSignoutClick = (e) => {
-    this.props.history.push("/home");
+    this.props.history.push("/main");
     this.props.signOut();
   };
   
@@ -151,7 +151,7 @@ class App extends React.Component {
             "is_in_process": false
           });
           
-          this.props.history.push("/home");
+          this.props.history.push("/main");
         }).catch((error) => {
           alert(error.response.data.message);
           this.setState({
@@ -179,7 +179,7 @@ class App extends React.Component {
           this.setState({
             "is_in_process": false
           });
-          this.props.history.push("/home");
+          this.props.history.push("/main");
           // window.Kakao.Auth.logout();
         }).catch((error) => {
           alert(error.response.data.message);
@@ -239,8 +239,8 @@ class App extends React.Component {
         <Divider />
         
         <List>
-          <Link to="/home" style={{ textDecoration: 'none' }}>
-            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/home") }} button>
+          <Link to="/main" style={{ textDecoration: 'none' }}>
+            <ListItem onClick={this.handleDrawerToggle} style={{ backgroundColor: this.menuButtonDecoration("/main") }} button>
               <ListItemIcon><HomeIcon /></ListItemIcon>
               <ListItemText primary="홈" />
             </ListItem>
@@ -385,7 +385,7 @@ class App extends React.Component {
         <Route path={match.url + "/request"} component={OrderRequest} />
         <Route path={match.url + "/list"} component={OrderList} />
         <Route path={match.url + "/verify"} component={OrderVerify} />
-        <Redirect to="/home" />
+        <Redirect to="/main" />
       </Switch>
     );
     
@@ -395,20 +395,20 @@ class App extends React.Component {
         <Route path={match.url + "/menu"} component={ManageMenu} />
         <Route path={match.url + "/setmenu"} component={ManageSetmenu} />
         <Route path={match.url + "/member_and_group"} component={ManageGroupAndMember} />
-        <Redirect to="/home" />
+        <Redirect to="/main" />
       </Switch>
     );
     
     /* Route로 변하는 부분을 정의 */
     const RouteView = (
       <Switch>
-        <Route path="/home" component={Home} />
+        <Route path="/main" component={Home} />
         <Route path="/group" component={Group} />
         <Route path="/order" component={OrderRoute} />
         <Route path="/queue" component={Queue} />
         <Route path="/statistics" component={Statistics} />
         <Route path="/manage" component={ManageRoute} />
-        <Redirect to="/home" />
+        <Redirect to="/main" />
       </Switch>
     );
 
