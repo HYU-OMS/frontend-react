@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Route, Switch, Redirect, Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { CssBaseline } from 'material-ui';
 import { withStyles } from 'material-ui/styles';
 import {
+  CssBaseline,
+  Snackbar,
   AppBar,
   Toolbar,
   Typography,
@@ -82,7 +83,7 @@ const styles = (theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
-  },
+  }
 });
 
 class App extends React.Component {
@@ -94,7 +95,9 @@ class App extends React.Component {
       "is_in_process": false,
       "is_mobile_menu_expanded": true,
       "check_jwt_valid_interval": null,
-      "remain_jwt_valid_time": null
+      "check_network_status_interval": null,
+      "remain_jwt_valid_time": null,
+      "is_network_online": true
     };
 
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
@@ -103,21 +106,23 @@ class App extends React.Component {
   
   componentWillMount() {
     this.setState({
-      "check_jwt_valid_interval": setInterval(this.chk_jwt_valid, 1000)
+      "check_jwt_valid_interval": setInterval(this.checkJsonWebTokenValid, 1000),
+      "check_network_status_interval": setInterval(this.checkNetworkStatus, 1000)
     });
   }
   
   componentWillUnmount() {
     clearInterval(this.state.check_jwt_valid_interval);
+    clearInterval(this.state.check_network_status_interval);
   }
-  
-  chk_jwt_valid = () => {
+
+  checkJsonWebTokenValid = () => {
     if(this.props.jwt) {
       /* global atob */
-      let jwt_content = this.props.jwt.split(".")[1];
-      let decoded_content = JSON.parse(atob(jwt_content));
-      let exp_unixtime = parseInt(decoded_content['exp'], 10);
-      let cur_unixtime = Math.round((new Date()).getTime() / 1000);
+      const jwt_content = this.props.jwt.split(".")[1];
+      const decoded_content = JSON.parse(atob(jwt_content));
+      const exp_unixtime = parseInt(decoded_content['exp'], 10);
+      const cur_unixtime = Math.round((new Date()).getTime() / 1000);
 
       if(exp_unixtime - cur_unixtime < 0) {
         alert("로그인 유효 시간이 만료되었습니다.\n다시 로그인해주세요.");
@@ -129,7 +134,15 @@ class App extends React.Component {
       }
     }
   };
-  
+
+  checkNetworkStatus = () => {
+    if(this.state.is_network_online !== navigator.onLine) {
+      this.setState({
+        "is_network_online": navigator.onLine
+      });
+    }
+  };
+
   handleSignoutClick = (e) => {
     this.props.history.push("/main");
     this.props.signOut();
@@ -138,7 +151,7 @@ class App extends React.Component {
   handleFacebookLogin = () => {
     window.FB.login((response) => {
       if(response.status === 'connected') {
-        let url = this.props.api_url + "/api/user?type=facebook";
+        const url = this.props.api_url + "/api/user?type=facebook";
 
         this.setState({
           "is_in_process": true
@@ -165,8 +178,8 @@ class App extends React.Component {
   handleKakaoLogin = () => {
     window.Kakao.Auth.login({
       success: (authObj) => {
-        let access_token = authObj['access_token'];
-        let url = this.props.api_url + "/api/user?type=kakao";
+        const access_token = authObj['access_token'];
+        const url = this.props.api_url + "/api/user?type=kakao";
 
         this.setState({
           "is_in_process": true
@@ -415,9 +428,9 @@ class App extends React.Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
-        
+
         {appbar}
-        
+
         <Hidden mdUp>
           <Drawer
             variant="temporary"
@@ -434,7 +447,7 @@ class App extends React.Component {
             {drawer}
           </Drawer>
         </Hidden>
-        
+
         <Hidden smDown implementation="css">
           <Drawer
             variant="permanent"
@@ -446,18 +459,25 @@ class App extends React.Component {
             {drawer}
           </Drawer>
         </Hidden>
-        
+
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          
+
           {RouteView}
-          
+
           <br/>
-          
+
           <Typography variant="caption" align="center">
             &copy; 2014 - 2018 한양대학교 한기훈
           </Typography>
         </main>
+
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={this.state.is_network_online === false}
+          onClose={this.handleClose}
+          message={<span>&#x26a0; 네트워크에 연결되어 있지 않습니다.</span>}
+        />
       </div>
     );
   }
