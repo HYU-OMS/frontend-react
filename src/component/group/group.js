@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { Paper, Typography } from 'material-ui';
+import { Paper, Typography, TextField, FormControl, Button } from 'material-ui';
 import { withStyles } from 'material-ui/styles';
 
 import List, { ListItem, ListItemText } from 'material-ui/List';
@@ -15,6 +15,12 @@ const styles = theme => ({
     width: '100%',
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
+  },
+  formField: {
+    paddingLeft: "15px",
+    paddingRight: "15px",
+    paddingTop: "10px",
+    paddingBottom: "10px"
   }
 });
 
@@ -211,8 +217,61 @@ class Group extends React.Component {
     return (
       <div>
         <Typography variant="headline" align="center">그룹 목록</Typography>
+
         <Paper className={classes.root}>
           <List>{group_list}</List>
+        </Paper>
+
+        <Paper className={classes.root}>
+          <br/>
+          <Typography variant="subheading" align="center">다른 그룹에 가입하기</Typography>
+
+          <FormControl fullWidth className={classes.formField}>
+            <TextField
+              label="그룹 고유번호"
+              value={this.state.new_signup_group_id}
+              onChange={this.handleChangeGroupId}
+              margin="none"
+              type="number"
+              placeholder="고유번호 입력"
+              fullWidth
+            />
+
+            <br/>
+
+            <TextField
+              label="가입 인증코드"
+              value={this.state.new_signup_code}
+              onChange={this.handleChangeCode}
+              margin="none"
+              placeholder="인증코드 입력"
+              fullWidth
+            />
+
+            <br/>
+
+            <Button fullWidth color="primary" variant="raised" onClick={this.handleOnSubmit}>가입하기</Button>
+          </FormControl>
+        </Paper>
+
+        <Paper className={classes.root}>
+          <br/>
+          <Typography variant="subheading" align="center">새 그룹 생성</Typography>
+
+          <FormControl fullWidth className={classes.formField}>
+            <TextField
+              label="새 그룹 이름"
+              value={this.state.group_create_new_name}
+              onChange={this.handleChangeNewGroupName}
+              margin="none"
+              placeholder="새 그룹 이름 입력"
+              fullWidth
+            />
+
+            <br/>
+
+            <Button fullWidth color="primary" variant="raised" onClick={this.handleSubmitNewGroup}>생성하기</Button>
+          </FormControl>
         </Paper>
       </div>
     );
