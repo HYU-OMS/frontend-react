@@ -7,7 +7,6 @@ import { withStyles } from 'material-ui/styles';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 import StarIcon from '@material-ui/icons/Star';
-import ClearIcon from '@material-ui/icons/Clear';
 import TouchAppIcon from '@material-ui/icons/TouchApp';
 
 import authAction from '../../action/index';
