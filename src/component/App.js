@@ -30,13 +30,19 @@ const styles = (theme) => ({
   },
   appBar: {
     position: 'fixed',
-    zIndex: theme.zIndex.drawer + 1
+    zIndex: theme.zIndex.drawer + 1,
+    boxShadow: '0px 0px 1px 0px rgba(0,0,0,0.2), 0px 0px 1px 0px rgba(0,0,0,0.14), 0px 0px 1px 0px rgba(0,0,0,0.12)',
+    backgroundColor: '#fdfdfd',
+    height: '56px'
   },
   menuButton: {
     marginLeft: -18,
     marginRight: 10,
   },
-  toolbar: theme.mixins.toolbar,
+  toolbar: {
+    height: '56px',
+    minHeight: '56px'
+  },
   drawerPaper: {
     width: drawerWidth,
     [theme.breakpoints.up('md')]: {
@@ -68,10 +74,10 @@ class App extends React.Component {
 
     /* 상단바 */
     const appbar = (
-      <AppBar className={classes.appBar}>
-        <Toolbar>
+      <AppBar className={classes.appBar} color="default">
+        <Toolbar className={classes.toolbar}>
           <Typography variant="title" color="inherit" noWrap>
-            HYU OMS
+            HYU-OMS
           </Typography>
         </Toolbar>
       </AppBar>
@@ -81,8 +87,6 @@ class App extends React.Component {
     const drawer = (
       <div>
         <div className={classes.toolbar} />
-
-        <Divider />
 
         <List>
           <Link to="/main" style={{ textDecoration: 'none' }}>
