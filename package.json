@@ -1,26 +1,25 @@
 {
-  "name": "hyu-oms-frontend-react",
+  "name": "hyu-oms-webapp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/icons": "^1.0.0-beta.43",
-    "axios": "^0.18.0",
-    "chart.js": "^2.7.2",
-    "material-ui": "^1.0.0-beta.44",
-    "react": "^16.3.0",
-    "react-chartjs-2": "^2.7.2",
-    "react-dom": "^16.3.0",
-    "react-redux": "^5.0.7",
-    "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1",
-    "redux": "^3.7.2"
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-scripts": "2.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "devDependencies": {}
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
