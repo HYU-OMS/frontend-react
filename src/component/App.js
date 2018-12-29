@@ -8,11 +8,14 @@ import {
   Divider,
   List, ListItem, ListItemIcon, ListItemText,
   Drawer,
-  Hidden
+  Hidden,
+  Button, IconButton,
+  Dialog, DialogTitle, DialogContent
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
 
 import HomeIcon from '@material-ui/icons/Home';
+import MenuIcon from '@material-ui/icons/Menu';
 
 import Home from './home/Home';
 
@@ -28,6 +31,9 @@ const styles = (theme) => ({
     display: 'flex',
     width: '100%',
   },
+  grow: {
+    flexGrow: 1,
+  },
   appBar: {
     position: 'fixed',
     zIndex: theme.zIndex.drawer + 1,
@@ -36,8 +42,9 @@ const styles = (theme) => ({
     height: '56px'
   },
   menuButton: {
-    marginLeft: -18,
+    marginLeft: -12,
     marginRight: 10,
+    color: '#aaaaaa'
   },
   toolbar: {
     height: '56px',
@@ -56,10 +63,45 @@ const styles = (theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
+  },
+  fbLoginButton: {
+    marginTop: theme.spacing.unit,
+    marginBottom: theme.spacing.unit / 2,
+    backgroundColor: '#3b5998',
+    borderColor: '#3b5998',
+    color: '#ffffff',
+    textTransform: 'initial'
+  },
+  kakaoLoginButton: {
+    marginTop: theme.spacing.unit / 2,
+    marginBottom: theme.spacing.unit,
+    borderColor: '#f9df33',
+    backgroundColor: '#f9df33',
+    textTransform: 'initial'
   }
 });
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      is_signin_dialog_open: false
+    };
+  }
+
+  handleSigninButtonClick = () => {
+    this.setState({
+      is_signin_dialog_open: true
+    });
+  };
+
+  handleSigninDialogClose = () => {
+    this.setState({
+      is_signin_dialog_open: false
+    });
+  };
+
   menuButtonDecoration = (path) => {
     if(path === this.props.location.pathname) {
       return 'rgba(0, 0, 0, 0.05)';
@@ -76,9 +118,19 @@ class App extends React.Component {
     const appbar = (
       <AppBar className={classes.appBar} color="default">
         <Toolbar className={classes.toolbar}>
-          <Typography variant="title" color="inherit" noWrap>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            className={classes.menuButton}
+          >
+            <MenuIcon />
+          </IconButton>
+
+          <Typography className={classes.grow} variant="title" color="inherit" noWrap>
             HYU-OMS
           </Typography>
+
+          <Button onClick={this.handleSigninButtonClick} color="inherit">로그인</Button>
         </Toolbar>
       </AppBar>
     );
@@ -112,6 +164,18 @@ class App extends React.Component {
       </Switch>
     );
 
+    /* 로그인 Dialog */
+    const signinDialog = (
+      <Dialog open={this.state.is_signin_dialog_open} onClose={this.handleSigninDialogClose} aria-labelledby="signin-dialog">
+        <DialogTitle style={{textAlign: 'center'}}>로그인 방법</DialogTitle>
+
+        <DialogContent>
+          <Button className={classes.fbLoginButton} color="default" variant="outlined" size="large" fullWidth>Facebook</Button>
+          <Button className={classes.kakaoLoginButton} color="default" variant="outlined" size="large" fullWidth>Kakao</Button>
+        </DialogContent>
+      </Dialog>
+    );
+
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -130,6 +194,7 @@ class App extends React.Component {
           </Drawer>
         </Hidden>
 
+        {signinDialog}
 
         <main className={classes.content}>
           <div className={classes.toolbar} />
