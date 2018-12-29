@@ -10,16 +10,17 @@ import {
   Drawer,
   Hidden,
   Button, IconButton,
-  Dialog, DialogTitle, DialogContent
+  Dialog, DialogTitle, DialogContent, DialogContentText
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
 
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import Home from './home/Home';
 
-const drawerWidth = 260;
+const drawerWidth = 240;
 
 const styles = (theme) => ({
   root: {
@@ -52,17 +53,24 @@ const styles = (theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       position: 'fixed',
     },
   },
   content: {
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       marginLeft: drawerWidth,
     },
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing.unit * 3
+  },
+  contentShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
   },
   fbLoginButton: {
     marginTop: theme.spacing.unit,
@@ -86,7 +94,8 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      is_signin_dialog_open: false
+      is_signin_dialog_open: false,
+      is_drawer_open: true
     };
   }
 
@@ -102,7 +111,13 @@ class App extends React.Component {
     });
   };
 
-  menuButtonDecoration = (path) => {
+  handleMenuButtonClick = () => {
+    this.setState({
+      is_drawer_open: !this.state.is_drawer_open
+    });
+  };
+
+  menulistDecoration = (path) => {
     if(path === this.props.location.pathname) {
       return 'rgba(0, 0, 0, 0.05)';
     }
@@ -122,6 +137,7 @@ class App extends React.Component {
             color="inherit"
             aria-label="open drawer"
             className={classes.menuButton}
+            onClick={this.handleMenuButtonClick}
           >
             <MenuIcon />
           </IconButton>
@@ -142,7 +158,7 @@ class App extends React.Component {
 
         <List>
           <Link to="/main" style={{ textDecoration: 'none' }}>
-            <ListItem style={{ backgroundColor: this.menuButtonDecoration("/main") }} button>
+            <ListItem style={{ backgroundColor: this.menulistDecoration("/main") }} button>
               <ListItemIcon><HomeIcon /></ListItemIcon>
               <ListItemText primary="홈" />
             </ListItem>
@@ -176,16 +192,50 @@ class App extends React.Component {
       </Dialog>
     );
 
+    /* 화면 크기 미지원 안내 Dialog */
+    const displaySizeNotSupportedDialog = (
+      <Dialog open aria-labelledby="mobile-page-redirection-alert">
+        <DialogTitle>화면 크기 미지원 안내</DialogTitle>
+
+        <Divider/>
+        <br/>
+
+        <DialogContent>
+          <DialogContentText>
+            현재 사용 중인 Web App 은 현재 화면 크기를 지원하지 않습니다.<br/>
+            화면을 가로로 회전하여 계속 사용하시거나 아래 버튼을 통해 모바일 전용 Web App 을 사용하시기 바랍니다.
+          </DialogContentText>
+        </DialogContent>
+
+        <Divider/>
+        <br/>
+
+        <DialogContent>
+          <DialogContentText>
+            <Button
+              onClick={() => { alert("준비중입니다!"); }}
+              color="primary"
+              variant="contained"
+              size="large"
+              fullWidth
+            >
+              모바일 Web App 으로 이동
+            </Button>
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+    );
+
     return (
       <div className={classes.root}>
         <CssBaseline />
 
         {appbar}
 
-        <Hidden smDown implementation="css">
+        <Hidden xsDown implementation="css">
           <Drawer
-            variant="permanent"
-            open
+            variant="persistent"
+            open={this.state.is_drawer_open}
             classes={{
               paper: classes.drawerPaper,
             }}
@@ -196,7 +246,9 @@ class App extends React.Component {
 
         {signinDialog}
 
-        <main className={classes.content}>
+        <main className={classNames(classes.content, {
+          [classes.contentShift]: !this.state.is_drawer_open,
+        })}>
           <div className={classes.toolbar} />
 
           {RouteView}
@@ -207,6 +259,10 @@ class App extends React.Component {
             &copy; 2014 - 2019 한양대학교 한기훈
           </Typography>
         </main>
+
+        <Hidden smUp>
+          {displaySizeNotSupportedDialog}
+        </Hidden>
       </div>
     );
   }
