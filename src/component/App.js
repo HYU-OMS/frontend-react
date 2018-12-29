@@ -126,6 +126,27 @@ class App extends React.Component {
     }
   };
 
+  handleFacebookLogin = () => {
+    window.FB.login((response) => {
+      if(response.status === 'connected') {
+        const access_token = response['authResponse']['accessToken'];
+        console.log(access_token);
+      }
+    });
+  };
+
+  handleKakaoLogin = () => {
+    window.Kakao.Auth.login({
+      success: (authObj) => {
+        const access_token = authObj['access_token'];
+        console.log(access_token);
+      },
+      fail: (err) => {
+        console.log(err);
+      }
+    });
+  };
+
   render() {
     const { classes } = this.props;
 
@@ -186,8 +207,21 @@ class App extends React.Component {
         <DialogTitle style={{textAlign: 'center'}}>로그인 방법</DialogTitle>
 
         <DialogContent>
-          <Button className={classes.fbLoginButton} color="default" variant="outlined" size="large" fullWidth>Facebook</Button>
-          <Button className={classes.kakaoLoginButton} color="default" variant="outlined" size="large" fullWidth>Kakao</Button>
+          <Button
+            className={classes.fbLoginButton}
+            onClick={this.handleFacebookLogin}
+            color="default" variant="outlined" size="large"
+            fullWidth
+          >
+            Facebook
+          </Button>
+          <Button
+            className={classes.kakaoLoginButton}
+            onClick={this.handleKakaoLogin}
+            color="default" variant="outlined" size="large"
+            fullWidth>
+            Kakao
+          </Button>
         </DialogContent>
       </Dialog>
     );
