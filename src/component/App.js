@@ -314,7 +314,7 @@ class App extends React.Component {
               <Link to="/order/verify" style={{ textDecoration: 'none' }}>
                 <ListItem style={{ backgroundColor: this.menulistDecoration("/order/verify") }} button>
                   <ListItemIcon><PlaylistAddCheckIcon /></ListItemIcon>
-                  <ListItemText primary="대기중인 주문 처리" />
+                  <ListItemText primary="대기중인 주문" />
                 </ListItem>
               </Link>
               }
@@ -330,7 +330,7 @@ class App extends React.Component {
               <Link to="/queue" style={{ textDecoration: 'none' }}>
                 <ListItem style={{ backgroundColor: this.menulistDecoration("/queue") }} button>
                   <ListItemIcon><FormatListNumberedIcon /></ListItemIcon>
-                  <ListItemText primary="대기열" />
+                  <ListItemText primary="메뉴별 대기열" />
                 </ListItem>
               </Link>
             </List>
