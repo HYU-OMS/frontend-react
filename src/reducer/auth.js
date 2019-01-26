@@ -8,7 +8,7 @@ const initialState = {
   "signup_code": (localStorage.getItem("signup_code") !== null) ? localStorage.getItem("signup_code") : "",
   "api_url": (process.env.NODE_ENV === 'development') ?
     ((Boolean(process.env.API_URL) === false) ?
-      'http://127.0.0.1:8080' : process.env.API_URL)
+      'http://127.0.0.1:8080' : process.env.REACT_APP_API_URL)
     : 'https://api.hyu-oms.com'
 };
 
