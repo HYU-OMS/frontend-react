@@ -5,7 +5,6 @@ import {
   Paper,
   Typography,
   Button,
-  Hidden,
   Table, TableBody, TableCell, TableHead, TableRow,
   TextField,
   FormControl,
