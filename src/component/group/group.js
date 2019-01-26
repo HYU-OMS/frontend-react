@@ -6,7 +6,7 @@ const styles = (theme) => ({
 
 });
 
-class Home extends React.Component {
+class Group extends React.Component {
   render() {
     const { classes } = this.props;
 
@@ -19,4 +19,4 @@ class Home extends React.Component {
   }
 }
 
-export default withStyles(styles)(Home);
+export default withStyles(styles)(Group);

@@ -17,8 +17,26 @@ import classNames from 'classnames';
 
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
+import GroupIcon from '@material-ui/icons/Group';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import TocIcon from '@material-ui/icons/Toc';
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
+import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
+import DonutSmallIcon from '@material-ui/icons/DonutSmall';
+import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
+import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 
 import Home from './home/Home';
+import Group from './group/group';
+import OrderRequest from './order/request';
+import OrderList from './order/list';
+import OrderVerify from './order/verify';
+import Queue from './queue/queue';
+import Statistics from './statistics/statistics';
+import ManageMenu from './manage/menu';
+import ManageSetmenu from './manage/setmenu';
+import ManageMemberAndGroup from './manage/member_and_group';
 
 const drawerWidth = 240;
 
@@ -95,7 +113,7 @@ class App extends React.Component {
 
     this.state = {
       is_signin_dialog_open: false,
-      is_drawer_open: true
+      is_drawer_open: (window.innerWidth >= 600)
     };
   }
 
@@ -111,7 +129,7 @@ class App extends React.Component {
     });
   };
 
-  handleMenuButtonClick = () => {
+  handleDrawerButtonClick = () => {
     this.setState({
       is_drawer_open: !this.state.is_drawer_open
     });
@@ -148,7 +166,7 @@ class App extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, theme } = this.props;
 
     /* 상단바 */
     const appbar = (
@@ -158,7 +176,7 @@ class App extends React.Component {
             color="inherit"
             aria-label="open drawer"
             className={classes.menuButton}
-            onClick={this.handleMenuButtonClick}
+            onClick={this.handleDrawerButtonClick}
           >
             <MenuIcon />
           </IconButton>
@@ -168,6 +186,7 @@ class App extends React.Component {
           </Typography>
 
           <Button onClick={this.handleSigninButtonClick} color="inherit">로그인</Button>
+          <Button color="inherit">로그아웃</Button>
         </Toolbar>
       </AppBar>
     );
@@ -176,6 +195,8 @@ class App extends React.Component {
     const drawer = (
       <div>
         <div className={classes.toolbar} />
+
+        <Divider />
 
         <List>
           <Link to="/main" style={{ textDecoration: 'none' }}>
@@ -188,8 +209,85 @@ class App extends React.Component {
 
         <Divider />
 
-        <div className={classes.toolbar} />
-        <div className={classes.toolbar} />
+        <List>
+          <Link to="/group" style={{ textDecoration: 'none' }}>
+            <ListItem style={{ backgroundColor: this.menulistDecoration("/group") }} button>
+              <ListItemIcon><GroupIcon /></ListItemIcon>
+              <ListItemText primary="그룹" />
+            </ListItem>
+          </Link>
+        </List>
+
+        <Divider />
+
+        <List>
+          <Link to="/order/request" style={{ textDecoration: 'none' }}>
+            <ListItem style={{ backgroundColor: this.menulistDecoration("/order/request") }} button>
+              <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
+              <ListItemText primary="주문 입력" />
+            </ListItem>
+          </Link>
+          <Link to="/order/list" style={{ textDecoration: 'none' }}>
+            <ListItem style={{ backgroundColor: this.menulistDecoration("/order/list") }} button>
+              <ListItemIcon><TocIcon /></ListItemIcon>
+              <ListItemText primary="주문 내역" />
+            </ListItem>
+          </Link>
+          <Link to="/order/verify" style={{ textDecoration: 'none' }}>
+            <ListItem style={{ backgroundColor: this.menulistDecoration("/order/verify") }} button>
+              <ListItemIcon><PlaylistAddCheckIcon /></ListItemIcon>
+              <ListItemText primary="대기중인 주문 처리" />
+            </ListItem>
+          </Link>
+        </List>
+
+        <Divider />
+
+        <List>
+          <Link to="/queue" style={{ textDecoration: 'none' }}>
+            <ListItem style={{ backgroundColor: this.menulistDecoration("/queue") }} button>
+              <ListItemIcon><FormatListNumberedIcon /></ListItemIcon>
+              <ListItemText primary="대기열" />
+            </ListItem>
+          </Link>
+        </List>
+
+        <Divider />
+
+        <List>
+          <Link to="/statistics" style={{ textDecoration: 'none' }}>
+            <ListItem style={{ backgroundColor: this.menulistDecoration("/statistics") }} button>
+              <ListItemIcon><DonutSmallIcon /></ListItemIcon>
+              <ListItemText primary="통계" />
+            </ListItem>
+          </Link>
+        </List>
+
+        <Divider />
+
+        <List>
+          <Link to="/manage/menu" style={{ textDecoration: 'none' }}>
+            <ListItem style={{ backgroundColor: this.menulistDecoration("/manage/menu") }} button>
+              <ListItemIcon><SettingsIcon /></ListItemIcon>
+              <ListItemText primary="메뉴 관리" />
+            </ListItem>
+          </Link>
+          <Link to="/manage/setmenu" style={{ textDecoration: 'none' }}>
+            <ListItem style={{ backgroundColor: this.menulistDecoration("/manage/setmenu") }} button>
+              <ListItemIcon><SettingsApplicationsIcon /></ListItemIcon>
+              <ListItemText primary="세트메뉴 관리" />
+            </ListItem>
+          </Link>
+          <Link to="/manage/member_and_group" style={{ textDecoration: 'none' }}>
+            <ListItem style={{ backgroundColor: this.menulistDecoration("/manage/member_and_group") }} button>
+              <ListItemIcon><PeopleOutlineIcon /></ListItemIcon>
+              <ListItemText primary="그룹, 멤버 관리" />
+            </ListItem>
+          </Link>
+        </List>
+
+        <Divider />
+
       </div>
     );
 
@@ -197,6 +295,19 @@ class App extends React.Component {
     const RouteView = (
       <Switch>
         <Route path="/main" component={Home} />
+        <Route path="/group" component={Group} />
+
+        <Route path="/order/request" component={OrderRequest} />
+        <Route path="/order/list" component={OrderList} />
+        <Route path="/order/verify" component={OrderVerify} />
+
+        <Route path="/queue" component={Queue} />
+        <Route path="/statistics" component={Statistics} />
+
+        <Route path="/manage/menu" component={ManageMenu} />
+        <Route path="/manage/setmenu" component={ManageSetmenu} />
+        <Route path="/manage/member_and_group" component={ManageMemberAndGroup} />
+
         <Redirect to="/main" />
       </Switch>
     );
@@ -226,40 +337,6 @@ class App extends React.Component {
       </Dialog>
     );
 
-    /* 화면 크기 미지원 안내 Dialog */
-    const displaySizeNotSupportedDialog = (
-      <Dialog open aria-labelledby="mobile-page-redirection-alert">
-        <DialogTitle>화면 크기 미지원 안내</DialogTitle>
-
-        <Divider/>
-        <br/>
-
-        <DialogContent>
-          <DialogContentText>
-            현재 사용 중인 Web App 은 현재 화면 크기를 지원하지 않습니다.<br/>
-            화면을 가로로 회전하여 계속 사용하시거나 아래 버튼을 통해 모바일 전용 Web App 을 사용하시기 바랍니다.
-          </DialogContentText>
-        </DialogContent>
-
-        <Divider/>
-        <br/>
-
-        <DialogContent>
-          <DialogContentText>
-            <Button
-              onClick={() => { alert("준비중입니다!"); }}
-              color="primary"
-              variant="contained"
-              size="large"
-              fullWidth
-            >
-              모바일 Web App 으로 이동
-            </Button>
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
-    );
-
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -272,6 +349,23 @@ class App extends React.Component {
             open={this.state.is_drawer_open}
             classes={{
               paper: classes.drawerPaper,
+            }}
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+
+        <Hidden smUp>
+          <Drawer
+            variant="temporary"
+            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+            open={this.state.is_drawer_open}
+            onClose={this.handleDrawerButtonClick}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
             }}
           >
             {drawer}
@@ -293,10 +387,6 @@ class App extends React.Component {
             &copy; 2014 - 2019 한양대학교 한기훈
           </Typography>
         </main>
-
-        <Hidden smUp>
-          {displaySizeNotSupportedDialog}
-        </Hidden>
       </div>
     );
   }
