@@ -86,7 +86,10 @@ const styles = (theme) => ({
     },
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3
+    paddingTop: theme.spacing.unit * 3,
+    paddingBottom: theme.spacing.unit * 3,
+    paddingLeft: theme.spacing.unit * ( (window.innerWidth < 600) ? 1.25 : 3),
+    paddingRight: theme.spacing.unit * ( (window.innerWidth < 600) ? 1.25 : 3)
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
