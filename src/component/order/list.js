@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
   Paper,
   Typography,
-  Button,
+  Button, Fab,
   Hidden,
   Table, TableBody, TableCell, TableHead, TableRow
 } from '@material-ui/core';
@@ -183,9 +183,9 @@ class OrderList extends React.Component {
     );
 
     const pageItems = this.state.pagination.map((page) =>
-      <Button key={page.num} variant="fab" mini color={(page.current === true) ? 'primary' : 'default'} className={classes.button} onClick={(e) => this.handleGetOrderListClick(page.num)}>
+      <Fab key={page.num} color={(page.current === true) ? 'primary' : 'default'} className={classes.button} onClick={(e) => this.handleGetOrderListClick(page.num)}>
         {page.text}
-      </Button>
+      </Fab>
     );
 
     return (
