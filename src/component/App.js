@@ -194,7 +194,33 @@ class App extends React.Component {
     window.Kakao.Auth.login({
       success: (authObj) => {
         const access_token = authObj['access_token'];
-        console.log(access_token);
+
+        this.setState({
+          "is_signin_in_progress": true
+        });
+
+        const url = this.props.api_url + "/v1/user";
+        const content = {
+          "type": "kakao",
+          "access_token": access_token
+        };
+
+        axios.post(url, content)
+          .then((response) => {
+            this.props.signIn(response.data.jwt);
+            this.setState({
+              "is_signin_in_progress": false,
+              "is_signin_dialog_open": false
+            });
+
+            this.props.history.push("/main");
+          })
+          .catch((error) => {
+            alert(error.response.data.message);
+            this.setState({
+              "is_signin_in_progress": false
+            });
+          });
       },
       fail: (err) => {
         console.log(err);
