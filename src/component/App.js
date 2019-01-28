@@ -86,10 +86,8 @@ const styles = (theme) => ({
     },
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    paddingTop: theme.spacing.unit * 3,
-    paddingBottom: theme.spacing.unit * 3,
-    paddingLeft: theme.spacing.unit * ( (window.innerWidth < 600) ? 1.25 : 3),
-    paddingRight: theme.spacing.unit * ( (window.innerWidth < 600) ? 1.25 : 3)
+    padding: theme.spacing.unit * 3,
+    paddingBottom: theme.spacing.unit * 3
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -181,7 +179,7 @@ class App extends React.Component {
               "is_signin_dialog_open": false
             });
 
-            this.props.history.push("/main");
+            this.props.history.push("/group");
           })
           .catch((error) => {
             alert(error.response.data.message);
@@ -216,7 +214,7 @@ class App extends React.Component {
               "is_signin_dialog_open": false
             });
 
-            this.props.history.push("/main");
+            this.props.history.push("/group");
           })
           .catch((error) => {
             alert(error.response.data.message);

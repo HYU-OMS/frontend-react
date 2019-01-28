@@ -8,11 +8,9 @@ const styles = (theme) => ({
 
 class Home extends React.Component {
   render() {
-    const { classes } = this.props;
-
     return (
       <div>
-        <Typography component="p">더 나은 서비스를 제공하기 위해 개편 준비 중입니다.</Typography>
+        <Typography component="p">더 나은 서비스를 제공하기 위해 개편 중입니다.</Typography>
         <Typography component="p">To provide better service, we are preparing for new version.</Typography>
       </div>
     );

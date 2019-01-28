@@ -188,7 +188,9 @@ class ManageMemberAndGroup extends React.Component {
   };
 
   downloadOrderList = () => {
-    alert("지금은 사용할 수 없습니다.");
+    const url = this.props.api_url + "/v1/download?jwt=" + this.props.jwt +
+      "&group_id=" + this.props.group_id + "&type=orders";
+    window.open(url);
   };
 
   render() {
