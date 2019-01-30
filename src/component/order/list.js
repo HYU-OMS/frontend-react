@@ -9,6 +9,8 @@ import {
   Table, TableBody, TableCell, TableHead, TableRow
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import { withSnackbar } from 'notistack';
+import io from 'socket.io-client';
 
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
@@ -51,12 +53,50 @@ class OrderList extends React.Component {
       "pagination": [],
       "cur_page": 1,
       "is_list_loading": true,
+      "socket_io": null
     };
   }
 
   componentDidMount() {
     this.getOrderList(1);
+
+    const socket_io = io(this.props.api_url);
+    socket_io.emit('select_group', {"group_id": this.props.group_id});
+
+    socket_io.on('order_added', (data) => {
+      const msg = "[새 주문] 번호: " + data.order_id.toString() +
+        ", 테이블명: " + data.table_name +
+        ", 총 가격: " + data.price.toString();
+
+      this.handleNotiStackVariant('info')(msg);
+      this.getOrderList(this.state.cur_page);
+    });
+
+    socket_io.on('order_verified', (data) => {
+      if(data['is_approved'] === true) {
+        const msg = "[주문 승인] 번호: " + data.order_id.toString();
+        this.handleNotiStackVariant('success')(msg);
+      }
+      else {
+        const msg = "[주문 거절] 번호: " + data.order_id.toString();
+        this.handleNotiStackVariant('error')(msg);
+      }
+
+      this.getOrderList(this.state.cur_page);
+    });
+
+    this.setState({
+      "socket_io": socket_io
+    });
   }
+
+  componentWillUnmount() {
+    this.state.socket_io.close();
+  }
+
+  handleNotiStackVariant = (variant) => (msg) => {
+    this.props.enqueueSnackbar(msg, { variant });
+  };
 
   getOrderList(page) {
     const url = this.props.api_url + "/v1/order?group_id=" +
@@ -231,4 +271,4 @@ const mapStateToProps = (state) => {
 
 export default connect(
   mapStateToProps
-)(withStyles(styles)(OrderList));
+)(withStyles(styles)(withSnackbar(OrderList)));
