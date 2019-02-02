@@ -9,9 +9,6 @@ import {
   ListSubheader, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { withSnackbar } from 'notistack';
-import io from 'socket.io-client';
-
 import DeleteIcon from '@material-ui/icons/Delete';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 
@@ -28,45 +25,13 @@ class Queue extends React.Component {
 
     this.state = {
       "queue": [],
-      "is_loading": true,
-      "socket_io": null
+      "is_loading": true
     };
   }
 
   componentDidMount() {
     this.getQueue();
-
-    const socket_io = io(this.props.api_url);
-    socket_io.emit('select_group', {"group_id": this.props.group_id});
-
-    socket_io.on('order_verified', (data) => {
-      if(data['is_approved'] === true) {
-        const msg = "[대기열 추가] 주문번호: " + data.order_id.toString() + ", 테이블명: " + data.table_name;
-        this.handleNotiStackVariant('info')(msg);
-        this.getQueue();
-      }
-    });
-
-    socket_io.on('queue_removed', (data) => {
-      const msg = "[대기열 제거] 주문번호: " + data.order_id.toString() +
-        ", 테이블명: " + data.table_name +
-        ", 메뉴명: " + data.menu_name;
-      this.handleNotiStackVariant('success')(msg);
-      this.getQueue();
-    });
-
-    this.setState({
-      "socket_io": socket_io
-    });
   }
-
-  componentWillUnmount() {
-    this.state.socket_io.close();
-  }
-
-  handleNotiStackVariant = (variant) => (msg) => {
-    this.props.enqueueSnackbar(msg, { variant });
-  };
 
   getQueue() {
     const url = this.props.api_url + "/v1/queue?group_id=" + (this.props.group_id).toString();
@@ -227,4 +192,4 @@ const mapStateToProps = (state) => {
 
 export default connect(
   mapStateToProps
-)(withStyles(styles)(withSnackbar(Queue)));
+)(withStyles(styles)(Queue));

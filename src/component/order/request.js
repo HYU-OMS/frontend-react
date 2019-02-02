@@ -11,8 +11,6 @@ import {
   Card, CardActions, CardContent
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { withSnackbar } from 'notistack';
-import io from "socket.io-client";
 
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -46,61 +44,14 @@ class OrderRequest extends React.Component {
       "is_setmenu_list_loading": true,
       "is_in_order_processing": false,
       "table_name": "",
-      "total_price": 0,
-      "socket_io": null
+      "total_price": 0
     };
   }
 
   componentDidMount() {
     this.getMenuList();
     this.getSetmenuList();
-
-    const socket_io = io(this.props.api_url);
-    socket_io.emit('select_group', {"group_id": this.props.group_id});
-
-    socket_io.on('menu_added', (data) => {
-      const msg = "[메뉴 추가] 이름: " + data['name'] + ", 가격: " + data['price'].toString();
-      this.handleNotiStackVariant('info')(msg);
-      this.getMenuList();
-    });
-
-    socket_io.on('menu_changed', (data) => {
-      const msg = "[메뉴 상태 변경] 이름: " + data['name'] +
-        ", 가격: " + data['price'].toString() +
-        ", 주문가능상태: " + ((data['is_enabled'] === true) ? 'O' : 'X');
-      this.handleNotiStackVariant('warning')(msg);
-      this.getMenuList();
-      if(data['is_enabled'] === false) {
-        this.getSetmenuList();
-      }
-    });
-
-    socket_io.on('setmenu_added', (data) => {
-      const msg = "[세트메뉴 추가] 이름: " + data['name'] + ", 가격: " + data['price'].toString();
-      this.handleNotiStackVariant('info')(msg);
-      this.getSetmenuList();
-    });
-
-    socket_io.on('setmenu_changed', (data) => {
-      const msg = "[세트메뉴 상태 변경] 이름: " + data['name'] +
-        ", 가격: " + data['price'].toString() +
-        ", 주문가능상태: " + ((data['is_enabled'] === true) ? 'O' : 'X');
-      this.handleNotiStackVariant('warning')(msg);
-      this.getSetmenuList();
-    });
-
-    this.setState({
-      "socket_io": socket_io
-    });
   }
-
-  componentWillUnmount() {
-    this.state.socket_io.close();
-  }
-
-  handleNotiStackVariant = (variant) => (msg) => {
-    this.props.enqueueSnackbar(msg, { variant });
-  };
 
   getMenuList = () => {
     const url = this.props.api_url + "/v1/menu?group_id=" + (this.props.group_id).toString();
@@ -397,4 +348,4 @@ const mapStateToProps = (state) => {
 
 export default connect(
   mapStateToProps
-)(withStyles(styles)(withSnackbar(OrderRequest)));
+)(withStyles(styles)(OrderRequest));
