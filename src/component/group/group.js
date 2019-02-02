@@ -12,8 +12,7 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
-import authAction from '../../action/index';
-const { selectGroup } = authAction.auth;
+import { selectGroup } from '../../action/auth';
 
 const styles = (theme) => ({
   root: {

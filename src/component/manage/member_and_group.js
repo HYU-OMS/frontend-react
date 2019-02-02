@@ -18,8 +18,7 @@ import StarHalfIcon from '@material-ui/icons/StarHalf';
 import StarIcon from '@material-ui/icons/Star';
 import TouchAppIcon from '@material-ui/icons/TouchApp';
 
-import authAction from '../../action/index';
-const { selectGroup } = authAction.auth;
+import { selectGroup } from '../../action/auth';
 
 const styles = (theme) => ({
   root: {

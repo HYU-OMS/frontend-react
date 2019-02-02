@@ -47,8 +47,7 @@ import ManageMenu from './manage/menu';
 import ManageSetmenu from './manage/setmenu';
 import ManageMemberAndGroup from './manage/member_and_group';
 
-import authAction from '../action/index';
-const { signIn, signOut } = authAction.auth;
+import { signIn, signOut } from '../action/auth';
 
 const drawerWidth = 240;
 

@@ -1,5 +1,4 @@
-import authAction from '../action/index';
-const { SIGN_IN, SIGN_OUT, SELECT_GROUP } = authAction.auth;
+import { SIGN_IN, SIGN_OUT, SELECT_GROUP } from '../action/auth';
 
 const initialState = {
   "jwt": localStorage.getItem("jwt"),
