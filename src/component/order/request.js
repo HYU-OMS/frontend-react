@@ -48,6 +48,16 @@ class OrderRequest extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps, nextContext) {
+    if(this.props.menu_updated_date !== nextProps.menu_updated_date) {
+      this.getMenuList();
+    }
+
+    if(this.props.setmenu_updated_date !== nextProps.setmenu_updated_date) {
+      this.getSetmenuList();
+    }
+  }
+
   componentDidMount() {
     this.getMenuList();
     this.getSetmenuList();
@@ -342,7 +352,9 @@ const mapStateToProps = (state) => {
   return {
     "jwt": state.auth.jwt,
     "api_url": state.auth.api_url,
-    "group_id": state.auth.group_id
+    "group_id": state.auth.group_id,
+    "menu_updated_date": state.realtimesync.menu_updated_date,
+    "setmenu_updated_date": state.realtimesync.setmenu_updated_date
   }
 };
 

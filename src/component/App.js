@@ -48,6 +48,7 @@ import ManageSetmenu from './manage/setmenu';
 import ManageMemberAndGroup from './manage/member_and_group';
 
 import { signIn, signOut } from '../action/auth';
+import { orderUpdate, queueUpdate, menuUpdate, setmenuUpdate } from '../action/realtimesync';
 
 const drawerWidth = 240;
 
@@ -188,22 +189,27 @@ class App extends React.Component {
         ", 총 가격: " + data.price.toString();
 
       this.handleNotiStackVariant('info')(msg);
+      this.props.orderUpdate(new Date());
     });
 
     socket_io.on('order_verified', (data) => {
       if(data['is_approved'] === true) {
         const msg = "[주문 승인] 번호: " + data.order_id.toString();
         this.handleNotiStackVariant('success')(msg);
+        this.props.queueUpdate(new Date());
       }
       else {
         const msg = "[주문 거절] 번호: " + data.order_id.toString();
         this.handleNotiStackVariant('error')(msg);
       }
+
+      this.props.orderUpdate(new Date());
     });
 
     socket_io.on('menu_added', (data) => {
       const msg = "[메뉴 추가] 이름: " + data['name'] + ", 가격: " + data['price'].toString();
       this.handleNotiStackVariant('info')(msg);
+      this.props.menuUpdate(new Date());
     });
 
     socket_io.on('menu_changed', (data) => {
@@ -217,11 +223,14 @@ class App extends React.Component {
       else {
         this.handleNotiStackVariant('error')(msg);
       }
+
+      this.props.menuUpdate(new Date());
     });
 
     socket_io.on('setmenu_added', (data) => {
       const msg = "[세트메뉴 추가] 이름: " + data['name'] + ", 가격: " + data['price'].toString();
       this.handleNotiStackVariant('info')(msg);
+      this.props.setmenuUpdate(new Date());
     });
 
     socket_io.on('setmenu_changed', (data) => {
@@ -235,6 +244,8 @@ class App extends React.Component {
       else {
         this.handleNotiStackVariant('error')(msg);
       }
+
+      this.props.setmenuUpdate(new Date());
     });
 
     socket_io.on('queue_removed', (data) => {
@@ -242,6 +253,7 @@ class App extends React.Component {
         ", 테이블명: " + data.table_name +
         ", 메뉴명: " + data.menu_name;
       this.handleNotiStackVariant('default')(msg);
+      this.props.queueUpdate(new Date());
     });
   };
 
@@ -677,7 +689,11 @@ const mapStateToProps = (state) => {
     "jwt": state.auth.jwt,
     "api_url": state.auth.api_url,
     "group_id": state.auth.group_id,
-    "role": state.auth.role
+    "role": state.auth.role,
+    "order_updated_date": state.realtimesync.order_updated_date,
+    "queue_updated_date": state.realtimesync.queue_updated_date,
+    "menu_updated_date": state.realtimesync.menu_updated_date,
+    "setmenu_updated_date": state.realtimesync.setmenu_updated_date,
   };
 };
 
@@ -688,6 +704,18 @@ const mapDispatchToProps = (dispatch) => {
     },
     "signOut": () => {
       dispatch(signOut());
+    },
+    "orderUpdate": (date) => {
+      dispatch(orderUpdate(date));
+    },
+    "queueUpdate": (date) => {
+      dispatch(queueUpdate(date));
+    },
+    "menuUpdate": (date) => {
+      dispatch(menuUpdate(date));
+    },
+    "setmenuUpdate": (date) => {
+      dispatch(setmenuUpdate(date));
     }
   };
 };

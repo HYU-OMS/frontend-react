@@ -33,6 +33,12 @@ class Queue extends React.Component {
     this.getQueue();
   }
 
+  componentWillReceiveProps(nextProps, nextContext) {
+    if(this.props.queue_updated_date !== nextProps.queue_updated_date) {
+      this.getQueue();
+    }
+  }
+
   getQueue() {
     const url = this.props.api_url + "/v1/queue?group_id=" + (this.props.group_id).toString();
     const headers = {
@@ -186,7 +192,8 @@ const mapStateToProps = (state) => {
   return {
     "jwt": state.auth.jwt,
     "api_url": state.auth.api_url,
-    "group_id": state.auth.group_id
+    "group_id": state.auth.group_id,
+    "queue_updated_date": state.realtimesync.queue_updated_date
   };
 };
 

@@ -57,6 +57,12 @@ class OrderVerify extends React.Component {
     this.getOrderList(1);
   }
 
+  componentWillReceiveProps(nextProps, nextContext) {
+    if(this.props.order_updated_date !== nextProps.order_updated_date) {
+      this.getOrderList(this.state.cur_page);
+    }
+  }
+
   getOrderList(page) {
     const url = this.props.api_url + "/v1/order?show_only_pending=1&group_id=" +
       (this.props.group_id).toString() + "&page=" + page.toString();
@@ -239,7 +245,8 @@ const mapStateToProps = (state) => {
   return {
     "jwt": state.auth.jwt,
     "api_url": state.auth.api_url,
-    "group_id": state.auth.group_id
+    "group_id": state.auth.group_id,
+    "order_updated_date": state.realtimesync.order_updated_date
   };
 };
 
