@@ -10,12 +10,16 @@ import {
   Drawer,
   Hidden,
   Button, IconButton,
-  Dialog, DialogTitle, DialogContent
+  Dialog, DialogTitle, DialogContent, DialogActions,
+  LinearProgress,
+  Tooltip
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { withSnackbar } from 'notistack';
+import io from 'socket.io-client';
 
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -28,6 +32,9 @@ import DonutSmallIcon from '@material-ui/icons/DonutSmall';
 import SettingsIcon from '@material-ui/icons/Settings';
 import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
+import CloudIcon from '@material-ui/icons/Cloud';
+import CloudOffIcon from '@material-ui/icons/CloudOff';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 
 import Home from './home/Home';
 import Group from './group/group';
@@ -120,9 +127,138 @@ class App extends React.Component {
     this.state = {
       is_signin_dialog_open: false,
       is_drawer_open: (window.innerWidth >= 600),
-      is_signin_in_progress: false
+      is_signin_in_progress: false,
+      socket_io: null,
+      ws_connected: false,
+      is_ws_disconnected_notify_dialog_open: false
     };
   }
+
+  componentDidMount() {
+    if(this.props.jwt !== null) {
+      this.connectSocketIO();
+    }
+  }
+
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (this.props.jwt === null && nextProps.jwt !== null) {
+      this.connectSocketIO();
+    }
+    else if (this.state.socket_io !== null && this.state.socket_io.connected === true &&
+      this.props.jwt !== null && (this.props.group_id !== nextProps.group_id)) {
+      this.state.socket_io.emit('select_group', {"group_id": nextProps.group_id});
+    }
+  }
+
+  componentWillUnmount() {
+    this.disconnectSocketIO();
+
+    if(this.state.ws_disconnect_chk_timer !== null) {
+      clearInterval(this.state.ws_disconnect_chk_timer);
+      this.setState({
+        "ws_disconnect_chk_timer": null
+      });
+    }
+  }
+
+  connectSocketIO = () => {
+    const socket_io = io(this.props.api_url);
+
+    socket_io.on('disconnect', () => {
+      this.setState({
+        "ws_connected": false,
+        "is_ws_disconnected_notify_dialog_open": true
+      })
+    });
+
+    socket_io.on('connect', () => {
+      if(this.props.group_id !== null) {
+        socket_io.emit('select_group', {"group_id": this.props.group_id});
+      }
+
+      this.setState({
+        "socket_io": socket_io,
+        "ws_connected": socket_io.connected,
+        "is_ws_disconnected_notify_dialog_open": false
+      });
+    });
+
+    socket_io.on('order_added', (data) => {
+      const msg = "[새 주문] 번호: " + data.order_id.toString() +
+        ", 테이블명: " + data.table_name +
+        ", 총 가격: " + data.price.toString();
+
+      this.handleNotiStackVariant('info')(msg);
+    });
+
+    socket_io.on('order_verified', (data) => {
+      if(data['is_approved'] === true) {
+        const msg = "[주문 승인] 번호: " + data.order_id.toString();
+        this.handleNotiStackVariant('success')(msg);
+      }
+      else {
+        const msg = "[주문 거절] 번호: " + data.order_id.toString();
+        this.handleNotiStackVariant('error')(msg);
+      }
+    });
+
+    socket_io.on('menu_added', (data) => {
+      const msg = "[메뉴 추가] 이름: " + data['name'] + ", 가격: " + data['price'].toString();
+      this.handleNotiStackVariant('info')(msg);
+    });
+
+    socket_io.on('menu_changed', (data) => {
+      const msg = "[메뉴 상태 변경] 이름: " + data['name'] +
+        ", 가격: " + data['price'].toString() +
+        ", 주문가능상태: " + ((data['is_enabled'] === true) ? 'O' : 'X');
+
+      if(data['is_enabled'] === true) {
+        this.handleNotiStackVariant('success')(msg);
+      }
+      else {
+        this.handleNotiStackVariant('error')(msg);
+      }
+    });
+
+    socket_io.on('setmenu_added', (data) => {
+      const msg = "[세트메뉴 추가] 이름: " + data['name'] + ", 가격: " + data['price'].toString();
+      this.handleNotiStackVariant('info')(msg);
+    });
+
+    socket_io.on('setmenu_changed', (data) => {
+      const msg = "[세트메뉴 상태 변경] 이름: " + data['name'] +
+        ", 가격: " + data['price'].toString() +
+        ", 주문가능상태: " + ((data['is_enabled'] === true) ? 'O' : 'X');
+
+      if(data['is_enabled'] === true) {
+        this.handleNotiStackVariant('success')(msg);
+      }
+      else {
+        this.handleNotiStackVariant('error')(msg);
+      }
+    });
+
+    socket_io.on('queue_removed', (data) => {
+      const msg = "[대기열 제거] 주문번호: " + data.order_id.toString() +
+        ", 테이블명: " + data.table_name +
+        ", 메뉴명: " + data.menu_name;
+      this.handleNotiStackVariant('default')(msg);
+    });
+  };
+
+  disconnectSocketIO = () => {
+    if(this.state.socket_io !== null) {
+      this.state.socket_io.close();
+      this.setState({
+        "socket_io": null,
+        "ws_connected": false
+      });
+    }
+  };
+
+  handleNotiStackVariant = (variant) => (msg) => {
+    this.props.enqueueSnackbar(msg, { variant });
+  };
 
   handleSigninButtonClick = () => {
     this.setState({
@@ -132,7 +268,13 @@ class App extends React.Component {
 
   handleSigninDialogClose = () => {
     this.setState({
-      is_signin_dialog_open: false
+      "is_signin_dialog_open": false
+    });
+  };
+
+  handleWsDisconnectednotifyDialogClose = () => {
+    this.setState({
+      "is_ws_disconnected_notify_dialog_open": false
     });
   };
 
@@ -154,6 +296,7 @@ class App extends React.Component {
   handleSignoutClick = (e) => {
     this.props.history.push("/main");
     this.props.signOut();
+    this.disconnectSocketIO();
   };
 
   handleFacebookLogin = () => {
@@ -248,6 +391,31 @@ class App extends React.Component {
           <Typography className={classes.grow} variant="title" color="inherit" noWrap>
             HYU-OMS
           </Typography>
+
+          {this.state.ws_connected === true &&
+            <React.Fragment>
+              {this.props.group_id !== null &&
+                <Tooltip title="실시간 업데이트 활성화">
+                  <IconButton>
+                    <ImportExportIcon />
+                  </IconButton>
+                </Tooltip>
+              }
+              <Tooltip title="실시간 동기화 서버 연결됨">
+                <IconButton>
+                  <CloudIcon />
+                </IconButton>
+              </Tooltip>
+            </React.Fragment>
+          }
+
+          {this.state.ws_connected === false &&
+            <Tooltip title="실시간 동기화 서버 연결 끊김">
+              <IconButton>
+                <CloudOffIcon />
+              </IconButton>
+            </Tooltip>
+          }
 
           {this.props.jwt === null &&
             <Button onClick={this.handleSigninButtonClick} color="inherit">로그인</Button>
@@ -428,6 +596,27 @@ class App extends React.Component {
       </Dialog>
     );
 
+    /* Socket.IO disconnected 안내 dialog */
+    const wsDisconnectedNotifyDialog = (
+      <Dialog
+        open={this.props.jwt !== null && this.state.is_ws_disconnected_notify_dialog_open === true}
+        onClose={this.handleWsDisconnectednotifyDialogClose}
+        aria-labelledby="ws-disconnected-notify-dialog"
+      >
+        <DialogTitle style={{textAlign: 'center'}}>실시간 동기화 서버 연결 끊김</DialogTitle>
+
+        <DialogContent>
+          <p>현재 재접속 시도 중이며 실시간 업데이트 외의 다른 기능은 그대로 사용 가능합니다.</p>
+          <LinearProgress />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleWsDisconnectednotifyDialogClose} color="primary">
+            닫기
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -464,6 +653,7 @@ class App extends React.Component {
         </Hidden>
 
         {signinDialog}
+        {wsDisconnectedNotifyDialog}
 
         <main className={classNames(classes.content, {
           [classes.contentShift]: !this.state.is_drawer_open,
@@ -510,4 +700,4 @@ const mapDispatchToProps = (dispatch) => {
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles, { "withTheme": true })(App)));
+)(withStyles(styles, { "withTheme": true })(withSnackbar(App))));
