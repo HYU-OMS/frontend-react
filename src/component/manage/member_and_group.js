@@ -102,6 +102,7 @@ class ManageMemberAndGroup extends React.Component {
       this.setState({
         "is_on_update": false
       });
+      alert("변경이 완료되었습니다.");
     }).catch((error) => {
       alert(error.response.data.message);
       this.setState({
@@ -312,7 +313,8 @@ const mapStateToProps = (state) => {
     "jwt": state.auth.jwt,
     "api_url": state.auth.api_url,
     "group_id": state.auth.group_id,
-    "signup_code": state.auth.signup_code
+    "signup_code": state.auth.signup_code,
+    "role": state.auth.role
   }
 };
 
