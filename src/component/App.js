@@ -164,7 +164,7 @@ class App extends React.Component {
   connectSocketIO = () => {
     const socket_io = io(this.props.api_url);
 
-    socket_io.on('disconnect', () => {
+    socket_io.on('disconnect', (reason) => {
       this.setState({
         "ws_connected": false,
         "is_ws_disconnected_notify_dialog_open": true
