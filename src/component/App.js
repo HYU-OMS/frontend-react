@@ -10,8 +10,7 @@ import {
   Drawer,
   Hidden,
   Button, IconButton,
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  LinearProgress,
+  Dialog, DialogTitle, DialogContent,
   Tooltip
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
@@ -130,7 +129,7 @@ class App extends React.Component {
       is_signin_in_progress: false,
       socket_io: null,
       ws_connected: false,
-      is_ws_disconnected_notify_dialog_open: false
+      ws_disconnected_msg_key: undefined
     };
   }
 
@@ -166,9 +165,19 @@ class App extends React.Component {
 
     socket_io.on('disconnect', (reason) => {
       this.setState({
-        "ws_connected": false,
-        "is_ws_disconnected_notify_dialog_open": true
-      })
+        "ws_connected": false
+      });
+
+      if(this.props.jwt !== null) {
+        const key = this.props.enqueueSnackbar("실시간 업데이트 기능이 중지되었습니다.", {
+          persist: true,
+          variant: 'warning'
+        });
+
+        this.setState({
+          "ws_disconnected_msg_key": key
+        });
+      }
     });
 
     socket_io.on('connect', () => {
@@ -178,9 +187,11 @@ class App extends React.Component {
 
       this.setState({
         "socket_io": socket_io,
-        "ws_connected": socket_io.connected,
-        "is_ws_disconnected_notify_dialog_open": false
+        "ws_connected": socket_io.connected
       });
+
+      this.props.closeSnackbar(this.state.ws_disconnected_msg_key);
+      this.handleNotiStackVariant('info')("실시간 업데이트 기능이 작동 중입니다.");
     });
 
     socket_io.on('order_added', (data) => {
@@ -263,6 +274,11 @@ class App extends React.Component {
       this.setState({
         "socket_io": null,
         "ws_connected": false
+      }, () => {
+        this.props.closeSnackbar(this.state.ws_disconnected_msg_key);
+        this.setState({
+          "ws_disconnected_msg_key": undefined
+        });
       });
     }
   };
@@ -280,12 +296,6 @@ class App extends React.Component {
   handleSigninDialogClose = () => {
     this.setState({
       "is_signin_dialog_open": false
-    });
-  };
-
-  handleWsDisconnectednotifyDialogClose = () => {
-    this.setState({
-      "is_ws_disconnected_notify_dialog_open": false
     });
   };
 
@@ -607,27 +617,6 @@ class App extends React.Component {
       </Dialog>
     );
 
-    /* Socket.IO disconnected 안내 dialog */
-    const wsDisconnectedNotifyDialog = (
-      <Dialog
-        open={this.props.jwt !== null && this.state.is_ws_disconnected_notify_dialog_open === true}
-        onClose={this.handleWsDisconnectednotifyDialogClose}
-        aria-labelledby="ws-disconnected-notify-dialog"
-      >
-        <DialogTitle style={{textAlign: 'center'}}>실시간 동기화 서버 연결 끊김</DialogTitle>
-
-        <DialogContent>
-          <p>현재 재접속 시도 중이며 실시간 업데이트 외의 다른 기능은 그대로 사용 가능합니다.</p>
-          <LinearProgress />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleWsDisconnectednotifyDialogClose} color="primary">
-            닫기
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -664,7 +653,6 @@ class App extends React.Component {
         </Hidden>
 
         {signinDialog}
-        {wsDisconnectedNotifyDialog}
 
         <main className={classNames(classes.content, {
           [classes.contentShift]: !this.state.is_drawer_open,

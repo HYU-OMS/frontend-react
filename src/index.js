@@ -11,7 +11,7 @@ import * as serviceWorker from './serviceWorker';
 import reducer from './reducer';
 
 const store = createStore(reducer);
-const max_snack = (window.innerWidth < 600) ? 3 : 5;
+const max_snack = (window.innerWidth < 600) ? 2 : 5;
 const horizontal_position = (window.innerWidth < 600) ? 'center': 'left';
 
 ReactDOM.render(
@@ -23,6 +23,7 @@ ReactDOM.render(
           horizontal: horizontal_position,
         }}
         maxSnack={max_snack}
+        dense={window.innerWidth < 600}
       >
         <App />
       </SnackbarProvider>
