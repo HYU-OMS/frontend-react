@@ -10,15 +10,13 @@ import {
   Drawer,
   Hidden,
   Button, IconButton,
-  Dialog, DialogTitle, DialogContent,
-  Tooltip
+  Dialog, DialogTitle, DialogContent
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { withSnackbar } from 'notistack';
-import io from 'socket.io-client';
 
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -31,9 +29,6 @@ import DonutSmallIcon from '@material-ui/icons/DonutSmall';
 import SettingsIcon from '@material-ui/icons/Settings';
 import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
-import CloudIcon from '@material-ui/icons/Cloud';
-import CloudOffIcon from '@material-ui/icons/CloudOff';
-import ImportExportIcon from '@material-ui/icons/ImportExport';
 
 import Home from './home/Home';
 import Group from './group/group';
@@ -127,161 +122,16 @@ class App extends React.Component {
       is_signin_dialog_open: false,
       is_drawer_open: (window.innerWidth >= 600),
       is_signin_in_progress: false,
-      socket_io: null,
-      ws_connected: false,
-      ws_disconnected_msg_key: undefined
     };
   }
 
   componentDidMount() {
-    if(this.props.jwt !== null) {
-      this.connectSocketIO();
-    }
-  }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (this.props.jwt === null && nextProps.jwt !== null) {
-      this.connectSocketIO();
-    }
-    else if (this.state.socket_io !== null && this.state.socket_io.connected === true &&
-      this.props.jwt !== null && (this.props.group_id !== nextProps.group_id)) {
-      this.state.socket_io.emit('select_group', {"group_id": nextProps.group_id});
-    }
   }
 
   componentWillUnmount() {
-    this.disconnectSocketIO();
 
-    if(this.state.ws_disconnect_chk_timer !== null) {
-      clearInterval(this.state.ws_disconnect_chk_timer);
-      this.setState({
-        "ws_disconnect_chk_timer": null
-      });
-    }
   }
-
-  connectSocketIO = () => {
-    const socket_io = io(this.props.api_url);
-
-    socket_io.on('disconnect', (reason) => {
-      this.setState({
-        "ws_connected": false
-      });
-
-      if(this.props.jwt !== null) {
-        const key = this.props.enqueueSnackbar("실시간 업데이트 기능이 중지되었습니다.", {
-          persist: true,
-          variant: 'warning'
-        });
-
-        this.setState({
-          "ws_disconnected_msg_key": key
-        });
-      }
-    });
-
-    socket_io.on('connect', () => {
-      if(this.props.group_id !== null) {
-        socket_io.emit('select_group', {"group_id": this.props.group_id});
-      }
-
-      this.setState({
-        "socket_io": socket_io,
-        "ws_connected": socket_io.connected
-      });
-
-      this.props.closeSnackbar(this.state.ws_disconnected_msg_key);
-      this.handleNotiStackVariant('info')("실시간 업데이트 기능이 작동 중입니다.");
-    });
-
-    socket_io.on('order_added', (data) => {
-      const msg = "[새 주문] 번호: " + data.order_id.toString() +
-        ", 테이블명: " + data.table_name +
-        ", 총 가격: " + data.price.toString();
-
-      this.handleNotiStackVariant('info')(msg);
-      this.props.orderUpdate(new Date());
-    });
-
-    socket_io.on('order_verified', (data) => {
-      if(data['is_approved'] === true) {
-        const msg = "[주문 승인] 번호: " + data.order_id.toString();
-        this.handleNotiStackVariant('success')(msg);
-        this.props.queueUpdate(new Date());
-      }
-      else {
-        const msg = "[주문 거절] 번호: " + data.order_id.toString();
-        this.handleNotiStackVariant('error')(msg);
-      }
-
-      this.props.orderUpdate(new Date());
-    });
-
-    socket_io.on('menu_added', (data) => {
-      const msg = "[메뉴 추가] 이름: " + data['name'] + ", 가격: " + data['price'].toString();
-      this.handleNotiStackVariant('info')(msg);
-      this.props.menuUpdate(new Date());
-    });
-
-    socket_io.on('menu_changed', (data) => {
-      const msg = "[메뉴 상태 변경] 이름: " + data['name'] +
-        ", 가격: " + data['price'].toString() +
-        ", 주문가능상태: " + ((data['is_enabled'] === true) ? 'O' : 'X');
-
-      if(data['is_enabled'] === true) {
-        this.handleNotiStackVariant('success')(msg);
-      }
-      else {
-        this.handleNotiStackVariant('error')(msg);
-      }
-
-      this.props.menuUpdate(new Date());
-    });
-
-    socket_io.on('setmenu_added', (data) => {
-      const msg = "[세트메뉴 추가] 이름: " + data['name'] + ", 가격: " + data['price'].toString();
-      this.handleNotiStackVariant('info')(msg);
-      this.props.setmenuUpdate(new Date());
-    });
-
-    socket_io.on('setmenu_changed', (data) => {
-      const msg = "[세트메뉴 상태 변경] 이름: " + data['name'] +
-        ", 가격: " + data['price'].toString() +
-        ", 주문가능상태: " + ((data['is_enabled'] === true) ? 'O' : 'X');
-
-      if(data['is_enabled'] === true) {
-        this.handleNotiStackVariant('success')(msg);
-      }
-      else {
-        this.handleNotiStackVariant('error')(msg);
-      }
-
-      this.props.setmenuUpdate(new Date());
-    });
-
-    socket_io.on('queue_removed', (data) => {
-      const msg = "[대기열 제거] 주문번호: " + data.order_id.toString() +
-        ", 테이블명: " + data.table_name +
-        ", 메뉴명: " + data.menu_name;
-      this.handleNotiStackVariant('default')(msg);
-      this.props.queueUpdate(new Date());
-    });
-  };
-
-  disconnectSocketIO = () => {
-    if(this.state.socket_io !== null) {
-      this.state.socket_io.close();
-      this.setState({
-        "socket_io": null,
-        "ws_connected": false
-      }, () => {
-        this.props.closeSnackbar(this.state.ws_disconnected_msg_key);
-        this.setState({
-          "ws_disconnected_msg_key": undefined
-        });
-      });
-    }
-  };
 
   handleNotiStackVariant = (variant) => (msg) => {
     this.props.enqueueSnackbar(msg, { variant });
@@ -317,7 +167,6 @@ class App extends React.Component {
   handleSignoutClick = (e) => {
     this.props.history.push("/main");
     this.props.signOut();
-    this.disconnectSocketIO();
   };
 
   handleFacebookLogin = () => {
@@ -412,31 +261,6 @@ class App extends React.Component {
           <Typography className={classes.grow} variant="title" color="inherit" noWrap>
             HYU-OMS
           </Typography>
-
-          {this.state.ws_connected === true &&
-            <React.Fragment>
-              {this.props.group_id !== null &&
-                <Tooltip title="실시간 업데이트 활성화">
-                  <IconButton>
-                    <ImportExportIcon />
-                  </IconButton>
-                </Tooltip>
-              }
-              <Tooltip title="실시간 동기화 서버 연결됨">
-                <IconButton>
-                  <CloudIcon />
-                </IconButton>
-              </Tooltip>
-            </React.Fragment>
-          }
-
-          {this.state.ws_connected === false &&
-            <Tooltip title="실시간 동기화 서버 연결 끊김">
-              <IconButton>
-                <CloudOffIcon />
-              </IconButton>
-            </Tooltip>
-          }
 
           {this.props.jwt === null &&
             <Button onClick={this.handleSigninButtonClick} color="inherit">로그인</Button>
